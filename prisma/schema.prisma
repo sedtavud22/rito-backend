@@ -14,26 +14,258 @@ datasource db {
 }
 
 model User {
-  id              String   @id @default(uuid())
-  username        String   @unique
+  id              Int             @id @default(autoincrement())
+  username        String          @unique
   password        String
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
-  firstName       String   @map("first_name")
-  lastName        String   @map("last_name")
-  phoneNumber     String?  @map("phone_number")
-  profileImageUrl String?  @map("profile_image_url")
-  birthDate       String?  @map("birth_date")
-  gender          Gender   @default(MALE)
-  role            Role
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt       DateTime        @updatedAt @map("updated_at") @db.Timestamp(0)
+  firstName       String          @map("first_name")
+  lastName        String          @map("last_name")
+  email           String          @unique
+  profileImageUrl String?         @map("profile_image_url")
+  isAdmin         Boolean         @default(false)
+  games           Game[]
+  orders          Order[]
+  communityposts  CommunityPost[]
+  comments        Comment[]
+  senders         FriendShip[]    @relation(name: "sender")
+  receivers       FriendShip[]    @relation(name: "receiver")
+  gameReviews     GameReview[]
+  payments        Payment[]
+  user1           ChatSession[]   @relation(name: "user1")
+  user2           ChatSession[]   @relation(name: "user2")
+  messages        Message[]
+
+  @@map("users")
 }
 
-enum Role {
-  USER
-  ADMIN
+model Game {
+  id                 Int             @id @default(autoincrement())
+  isVerified         Boolean         @default(false) @map("is_verified")
+  name               String
+  slug               String
+  releasedDate       DateTime        @map("released_date")
+  price              Int
+  discount           Decimal?
+  backgroundImageUrl String          @map("background_image_url")
+  metacritic         Int?
+  createdAt          DateTime        @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt          DateTime        @updatedAt @map("updated_at") @db.Timestamp(0)
+  user               User            @relation(fields: [publisherId], references: [id])
+  publisherId        Int             @map("publisher_id")
+  ratings            Rating[]
+  gamePlatforms      GamePlatform[]
+  gameGenres         GameGenre[]
+  gameTags           GameTag[]
+  screenshots        ScreenShot[]
+  orderItems         OrderItem[]
+  communityposts     CommunityPost[]
+  gameReviews        GameReview[]
+
+  @@map("games")
 }
 
-enum Gender {
-  MALE
-  FEMALE
+model Rating {
+  id        Int      @id @default(autoincrement())
+  title     String
+  count     Int
+  percent   Float
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(0)
+  game      Game     @relation(fields: [gameId], references: [id])
+  gameId    Int      @map("game_id")
+
+  @@map("ratings")
+}
+
+model Platform {
+  id            Int            @id @default(autoincrement())
+  name          String
+  slug          String
+  imageUrl      String         @map("image_url")
+  gamePlatforms GamePlatform[]
+
+  @@map("platforms")
+}
+
+model GamePlatform {
+  game        Game     @relation(fields: [gameId], references: [id])
+  gameId      Int
+  platform    Platform @relation(fields: [platformId], references: [id])
+  platformId  Int
+  requirement String
+
+  @@unique([gameId, platformId])
+  @@map("game_platforms")
+}
+
+model Genre {
+  id                 Int         @id @default(autoincrement())
+  name               String
+  slug               String
+  backgroundImageUrl String      @map("background_image_url")
+  gameGenres         GameGenre[]
+
+  @@map("genres")
+}
+
+model GameGenre {
+  genre   Genre @relation(fields: [genreId], references: [id])
+  genreId Int   @map("genre_id")
+  game    Game  @relation(fields: [gameId], references: [id])
+  gameId  Int   @map("game_id")
+
+  @@unique([genreId, gameId])
+  @@map("game_genres")
+}
+
+model Tag {
+  id                 Int       @id @default(autoincrement())
+  name               String
+  slug               String
+  backgroundImageUrl String    @map("background_image_url")
+  gameTags           GameTag[]
+
+  @@map("tags")
+}
+
+model GameTag {
+  game   Game @relation(fields: [gameId], references: [id])
+  gameId Int  @map("game_id")
+  tag    Tag  @relation(fields: [tagId], references: [id])
+  tagId  Int  @map("tag_id")
+
+  @@unique([gameId, tagId])
+  @@map("game_tags")
+}
+
+model ScreenShot {
+  id       Int    @id @default(autoincrement())
+  imageUrl String @map("image_url")
+  game     Game   @relation(fields: [gameId], references: [id])
+  gameId   Int    @map("game_id")
+
+  @@map("screenshots")
+}
+
+model Order {
+  id         Int         @id @default(autoincrement())
+  user       User        @relation(fields: [userId], references: [id])
+  userId     Int         @map("user_id")
+  status     OrderStatus @default(PENDING)
+  createdAt  DateTime    @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt  DateTime    @updatedAt @map("updated_at") @db.Timestamp(0)
+  orderItems OrderItem[]
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+}
+
+model OrderItem {
+  id      Int   @id @default(autoincrement())
+  order   Order @relation(fields: [orderId], references: [id])
+  orderId Int   @map("order_id")
+  game    Game  @relation(fields: [gameId], references: [id])
+  gameId  Int   @map("game_id")
+
+  @@map("order_items")
+}
+
+model CommunityPost {
+  id        Int       @id @default(autoincrement())
+  content   String
+  postType  PostType  @default(DISCUSSION) @map("post_type")
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int       @map("user_id")
+  game      Game      @relation(fields: [gameId], references: [id])
+  gameId    Int       @map("game_id")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp(0)
+  comments  Comment[]
+
+  @@map("community_posts")
+}
+
+enum PostType {
+  SCREENSHOT
+  FANART
+  DISCUSSION
+}
+
+model Comment {
+  id              Int           @id @default(autoincrement())
+  content         String
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt       DateTime      @updatedAt @map("updated_at") @db.Timestamp(0)
+  user            User          @relation(fields: [commenterId], references: [id])
+  commenterId     Int           @map("commenter_id")
+  communityPost   CommunityPost @relation(fields: [communityPostId], references: [id])
+  communityPostId Int           @map("community_post_id")
+
+  @@map("comments")
+}
+
+model FriendShip {
+  id         Int          @id @default(autoincrement())
+  sender     User         @relation(fields: [senderId], references: [id], name: "sender")
+  senderId   Int          @map("sender_id")
+  receiver   User         @relation(fields: [receiverId], references: [id], name: "receiver")
+  receiverId Int          @map("receiver_id")
+  status     FriendStatus
+
+  @@map("friendships")
+}
+
+enum FriendStatus {
+  PENDING
+  ACCEPTED
+}
+
+model GameReview {
+  id     Int  @id @default(autoincrement())
+  User   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+  Game   Game @relation(fields: [gameId], references: [id])
+  gameId Int  @map("game_id")
+
+  @@map("game_reviews")
+}
+
+model Payment {
+  id             Int      @id @default(autoincrement())
+  cardToken      String   @map("card_token")
+  cardBrand      String   @map("card_brand")
+  lastFourDigits String   @map("last_four_digits") @db.VarChar(4)
+  expiryDate     DateTime @map("expiry_date") @db.Date
+  user           User     @relation(fields: [userId], references: [id])
+  userId         Int      @map("user_id")
+
+  @@map("payments")
+}
+
+model ChatSession {
+  id       Int       @id @default(autoincrement())
+  user1    User      @relation(fields: [user1Id], references: [id], name: "user1")
+  user1Id  Int       @map("user_1_id")
+  user2    User      @relation(fields: [user2Id], references: [id], name: "user2")
+  user2Id  Int       @map("user_2_id")
+  messages Message[]
+
+  @@map("chat_sessions")
+}
+
+model Message {
+  id            Int         @id @default(autoincrement())
+  content       String
+  timestamp     DateTime    @db.Timestamp(0)
+  chatSession   ChatSession @relation(fields: [chatSessionId], references: [id])
+  chatSessionId Int         @map("chat_session_id")
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int         @map("user_id")
+
+  @@map("messages")
 }

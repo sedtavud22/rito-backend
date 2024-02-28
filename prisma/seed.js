@@ -6,9 +6,10 @@ async function seeding() {
         data: {
             username: "admin",
             password: "admin1234",
-            role: Role.ADMIN,
+            isAdmin: true,
             firstName: "admin",
             lastName: "cc16",
+            email: "admin@gmail.com",
         },
     })
 }
