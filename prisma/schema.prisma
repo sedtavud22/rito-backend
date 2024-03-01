@@ -19,6 +19,7 @@ model User {
   password        String
   createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt       DateTime         @updatedAt @map("updated_at") @db.Timestamp(0)
+  displayName     String?
   firstName       String           @map("first_name")
   lastName        String           @map("last_name")
   email           String           @unique
