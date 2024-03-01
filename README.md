@@ -49,9 +49,9 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## Stay in touch
 
--   Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
--   Website - [https://nestjs.com](https://nestjs.com/)
--   Twitter - [@nestframework](https://twitter.com/nestframework)
+- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
@@ -69,3 +69,24 @@ $ pnpx prisma migrate dev
 # To sync database depend on schema.prisma file without creating migration version
 $ pnpx prisma db push
 ```
+
+## API
+
+| Name           | Endpoint                  | Method | Header | Request Body | Response Code | Remark              |
+| -------------- | ------------------------- | ------ | ------ | ------------ | ------------- | ------------------- |
+| Register       | /user/register            | POST   |        |              |               |                     |
+| Login          | /user/login               | POST   |        |              |               |                     |
+| Get user by id | /user/:id                 | GET    | JWT    |              |               |                     |
+| Get all users  | /user                     | GET    |        |              |               |                     |
+| Update User    | /user/:id                 | PUT    |        |              |               |                     |
+| Delete User    | /user/:id                 | DELETE |        |              |               |                     |
+| Get all games  | /games                    | GET    |        |              |               | verified&non-delete |
+| Get game by id | /games/:gameId            | GET    |        |              |               |                     |
+| Create game    | /games                    | POST   |        |              |               | non-verified        |
+| Update game    | /games/:gameId / PATCH    |        |        |              |               |                     |
+| Request friend | /friends/:targetId        | POST   |        |              |               |                     |
+| Accept friend  | /friends/:targetId/accept | PATCH  |        |              |               |                     |
+| Reject friend  | /friends/:targetId/reject | PATCH  |        |              |               |                     |
+| Get all posts  | /posts                    | GET    |        |              |               | non-deleted         |
+| Create post    | /posts                    | POST   |        |              |               |                     |
+| Get post by id | /posts/:postId            | GET    |        |              |               | include owned user  |
