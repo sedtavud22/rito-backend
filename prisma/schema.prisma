@@ -14,46 +14,49 @@ datasource db {
 }
 
 model User {
-  id              Int             @id @default(autoincrement())
-  username        String          @unique
+  id              Int              @id @default(autoincrement())
+  username        String           @unique
   password        String
-  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamp(0)
-  updatedAt       DateTime        @updatedAt @map("updated_at") @db.Timestamp(0)
-  firstName       String          @map("first_name")
-  lastName        String          @map("last_name")
-  email           String          @unique
-  profileImageUrl String?         @map("profile_image_url")
-  isAdmin         Boolean         @default(false)
+  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt       DateTime         @updatedAt @map("updated_at") @db.Timestamp(0)
+  firstName       String           @map("first_name")
+  lastName        String           @map("last_name")
+  email           String           @unique
+  profileImageUrl String?          @map("profile_image_url")
+  isAdmin         Boolean          @default(false)
   games           Game[]
   orders          Order[]
+  carts           Cart[]
   communityposts  CommunityPost[]
   comments        Comment[]
-  senders         FriendShip[]    @relation(name: "sender")
-  receivers       FriendShip[]    @relation(name: "receiver")
+  senders         FriendShip[]     @relation(name: "sender")
+  receivers       FriendShip[]     @relation(name: "receiver")
   gameReviews     GameReview[]
   payments        Payment[]
-  user1           ChatSession[]   @relation(name: "user1")
-  user2           ChatSession[]   @relation(name: "user2")
+  user1           ChatSession[]    @relation(name: "user1")
+  user2           ChatSession[]    @relation(name: "user2")
   messages        Message[]
+  gameCollections GameCollection[]
 
   @@map("users")
 }
 
 model Game {
-  id                 Int             @id @default(autoincrement())
-  isVerified         Boolean         @default(false) @map("is_verified")
+  id                 Int              @id @default(autoincrement())
+  isVerified         Boolean          @default(false) @map("is_verified")
   name               String
   slug               String
-  releasedDate       DateTime        @map("released_date")
+  releasedDate       DateTime         @map("released_date") @db.Date
+  description        String?          @db.Text
   price              Int
   discount           Decimal?
-  backgroundImageUrl String          @map("background_image_url")
+  backgroundImageUrl String           @map("background_image_url")
   metacritic         Int?
-  createdAt          DateTime        @default(now()) @map("created_at") @db.Timestamp(0)
-  updatedAt          DateTime        @updatedAt @map("updated_at") @db.Timestamp(0)
-  user               User            @relation(fields: [publisherId], references: [id])
-  publisherId        Int             @map("publisher_id")
-  ratings            Rating[]
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamp(0)
+  deletedAt          DateTime?        @map("deleted_at") @db.Timestamp(0)
+  user               User             @relation(fields: [publisherId], references: [id])
+  publisherId        Int              @map("publisher_id")
   gamePlatforms      GamePlatform[]
   gameGenres         GameGenre[]
   gameTags           GameTag[]
@@ -61,39 +64,35 @@ model Game {
   orderItems         OrderItem[]
   communityposts     CommunityPost[]
   gameReviews        GameReview[]
+  gameCollections    GameCollection[]
 
   @@map("games")
 }
 
-model Rating {
-  id        Int      @id @default(autoincrement())
-  title     String
-  count     Int
-  percent   Float
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(0)
-  game      Game     @relation(fields: [gameId], references: [id])
-  gameId    Int      @map("game_id")
+model GameCollection {
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+  game   Game @relation(fields: [gameId], references: [id])
+  gameId Int
 
-  @@map("ratings")
+  @@unique([userId, gameId])
+  @@map("game_collections")
 }
 
 model Platform {
   id            Int            @id @default(autoincrement())
   name          String
   slug          String
-  imageUrl      String         @map("image_url")
   gamePlatforms GamePlatform[]
 
   @@map("platforms")
 }
 
 model GamePlatform {
-  game        Game     @relation(fields: [gameId], references: [id])
-  gameId      Int
-  platform    Platform @relation(fields: [platformId], references: [id])
-  platformId  Int
-  requirement String
+  game       Game     @relation(fields: [gameId], references: [id])
+  gameId     Int
+  platform   Platform @relation(fields: [platformId], references: [id])
+  platformId Int
 
   @@unique([gameId, platformId])
   @@map("game_platforms")
@@ -175,6 +174,25 @@ model OrderItem {
   @@map("order_items")
 }
 
+model Cart {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime   @updatedAt @map("updated_at") @db.Timestamp(0)
+  cartitems CartItem[]
+  user      User       @relation(fields: [userId], references: [id])
+  userId    Int        @map("user_id")
+
+  @@map("carts")
+}
+
+model CartItem {
+  id     Int  @id @default(autoincrement())
+  cart   Cart @relation(fields: [cartId], references: [id])
+  cartId Int  @map("cart_id")
+
+  @@map("cart_items")
+}
+
 model CommunityPost {
   id        Int       @id @default(autoincrement())
   content   String
@@ -185,6 +203,7 @@ model CommunityPost {
   gameId    Int       @map("game_id")
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp(0)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp(0)
   comments  Comment[]
 
   @@map("community_posts")
@@ -223,14 +242,17 @@ model FriendShip {
 enum FriendStatus {
   PENDING
   ACCEPTED
+  REJECTED
 }
 
 model GameReview {
-  id     Int  @id @default(autoincrement())
-  User   User @relation(fields: [userId], references: [id])
-  userId Int  @map("user_id")
-  Game   Game @relation(fields: [gameId], references: [id])
-  gameId Int  @map("game_id")
+  id     Int    @id @default(autoincrement())
+  rating Int    @db.UnsignedTinyInt
+  review String
+  User   User   @relation(fields: [userId], references: [id])
+  userId Int    @map("user_id")
+  Game   Game   @relation(fields: [gameId], references: [id])
+  gameId Int    @map("game_id")
 
   @@map("game_reviews")
 }
