@@ -1,5 +1,11 @@
 const results = require("../data/games.json");
 
+const mockPrices = [
+  99, 115, 149, 159, 199, 220, 275, 289, 299, 315, 319, 349, 369, 389, 399, 400,
+  495, 499, 549, 559, 590, 599, 647, 699, 719, 739, 799, 809, 1189, 1190, 1197,
+  1290, 1490, 1499, 1600, 1899, 1979,
+];
+
 exports.games = results.map((game) => ({
   id: game.id,
   isVerified: true,
@@ -7,7 +13,7 @@ exports.games = results.map((game) => ({
   slug: game.slug,
   description: game.description,
   releasedDate: new Date(game.released),
-  price: 12,
+  price: mockPrices[Math.floor(Math.random() * mockPrices.length)],
   backgroundImageUrl: game.background_image,
   metacritic: game.metacritic,
   publisherId: 1,
