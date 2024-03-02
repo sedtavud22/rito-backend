@@ -250,9 +250,9 @@ model GameReview {
   id     Int    @id @default(autoincrement())
   rating Int    @db.UnsignedTinyInt
   review String
-  User   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
   userId Int    @map("user_id")
-  Game   Game   @relation(fields: [gameId], references: [id])
+  game   Game   @relation(fields: [gameId], references: [id])
   gameId Int    @map("game_id")
 
   @@map("game_reviews")
