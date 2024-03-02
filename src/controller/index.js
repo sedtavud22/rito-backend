@@ -1,4 +1,8 @@
 const controller = {
-    user: require("./user"),
-}
-module.exports = controller
+  user: require("./user"),
+  game: require("./game"),
+  genre: require("./genre"),
+  tag: require("./tag"),
+  platform: require("./platform"),
+};
+module.exports = controller;

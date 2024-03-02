@@ -72,21 +72,28 @@ $ pnpx prisma db push
 
 ## API
 
-| Name           | Endpoint                  | Method | Header | Request Body | Response Code | Remark              |
-| -------------- | ------------------------- | ------ | ------ | ------------ | ------------- | ------------------- |
-| Register       | /user/register            | POST   |        |              |               |                     |
-| Login          | /user/login               | POST   |        |              |               |                     |
-| Get user by id | /user/:id                 | GET    | JWT    |              |               |                     |
-| Get all users  | /user                     | GET    |        |              |               |                     |
-| Update User    | /user/:id                 | PUT    |        |              |               |                     |
-| Delete User    | /user/:id                 | DELETE |        |              |               |                     |
-| Get all games  | /games                    | GET    |        |              |               | verified&non-delete |
-| Get game by id | /games/:gameId            | GET    |        |              |               |                     |
-| Create game    | /games                    | POST   |        |              |               | non-verified        |
-| Update game    | /games/:gameId / PATCH    |        |        |              |               |                     |
-| Request friend | /friends/:targetId        | POST   |        |              |               |                     |
-| Accept friend  | /friends/:targetId/accept | PATCH  |        |              |               |                     |
-| Reject friend  | /friends/:targetId/reject | PATCH  |        |              |               |                     |
-| Get all posts  | /posts                    | GET    |        |              |               | non-deleted         |
-| Create post    | /posts                    | POST   |        |              |               |                     |
-| Get post by id | /posts/:postId            | GET    |        |              |               | include owned user  |
+| Name               | Endpoint                  | Method | Header | Request Body | Response Code | Remark              |
+| ------------------ | ------------------------- | ------ | ------ | ------------ | ------------- | ------------------- |
+| Register           | /user/register            | POST   |        |              |               |                     |
+| Login              | /user/login               | POST   |        |              |               |                     |
+| Get user by id     | /user/:id                 | GET    | JWT    |              |               |                     |
+| Get all users      | /user                     | GET    |        |              |               |                     |
+| Update User        | /user/:id                 | PUT    |        |              |               |                     |
+| Delete User        | /user/:id                 | DELETE |        |              |               |                     |
+| Get all games      | /games                    | GET    |        |              |               | verified&non-delete |
+| Get game by id     | /games/:gameId            | GET    |        |              |               |                     |
+| Get game by user   | /games/user/:userId       | GET    |        |              |               |                     |
+| Get game by tags   | /games/tag/:tagId         | GET    |        |              |               |
+| Get game by genres | /games/genre/:genreId     | GET    |        |              |               |
+| Create game        | /games                    | POST   |        |              |               | non-verified        |
+| Update game        | /games/:gameId/update     | PATCH  |        |              |               |                     |
+| Delete game        | /games/:gameId/delete     | PATCH  |        |              |               |                     |
+| Get all tags       | /tags                     | GET    |        |              |               |
+| Get all genres     | /genres                   | GET    |        |              |               |
+| Get all platforms  | /platforms                | GET    |        |              |               |
+| Request friend     | /friends/:targetId        | POST   |        |              |               |                     |
+| Accept friend      | /friends/:targetId/accept | PATCH  |        |              |               |                     |
+| Reject friend      | /friends/:targetId/reject | PATCH  |        |              |               |                     |
+| Get all posts      | /posts                    | GET    |        |              |               | non-deleted         |
+| Create post        | /posts                    | POST   |        |              |               |                     |
+| Get post by id     | /posts/:postId            | GET    |        |              |               | include owned user  |
