@@ -45,13 +45,13 @@ module.exports.login = async (req, res, next) => {
 }
 module.exports.register = async (req, res, next) => {
     try {
-        const { username, password, firstName, lastName } = req.body
-        let role = Role.USER
-        if (req.body.role != Role.ADMIN) role = Role.ADMIN
+        const { username, password, firstName, lastName,email, isAdmin } = req.body
+        // let role = Role.USER
+        // if (req.body.role != Role.ADMIN) role = Role.ADMIN
         // HASHED PASSWORD
         const hashed = await utils.bcrypt.hashed(password)
         // CREATE user to database
-        const user = await repo.user.create({ username, password: hashed, firstName, lastName, role })
+        const user = await repo.user.create({ username, password: hashed, firstName,lastName, email, isAdmin })
         // DELETE KEY of password from user data
         delete user.password
         // SIGN token from user data
@@ -66,8 +66,8 @@ module.exports.register = async (req, res, next) => {
 module.exports.update = async (req, res, next) => {
     try {
         const { id } = req.params
-        const { firstName, lastName } = req.body
-        const user = await repo.user.update({ id }, { firstName, lastName })
+        const { firstName, lastName, profileImageUrl } = req.body
+        const user = await repo.user.update({ id: +id }, { firstName, lastName,profileImageUrl })
 
         res.status(200).json({ user })
     } catch (err) {
