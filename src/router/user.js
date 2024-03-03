@@ -6,6 +6,7 @@ const authenticate = require("../middlewares/authenticate")
 const userRoute = express.Router()
 
 userRoute.get("/", c.user.getAll)
+userRoute.get("/me",authenticate ,c.user.getMe)
 userRoute.get("/:id", c.user.get)
 userRoute.post("/register", c.user.register)
 userRoute.post("/login", c.user.login)

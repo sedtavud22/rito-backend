@@ -12,6 +12,15 @@ module.exports.getAll = async (req, res, next) => {
     }
     return
 }
+
+module.exports.getMe = async (req,res,next) =>{
+    try{
+        res.status(200).json({user: req.user})
+    }catch(err){
+        next(err)
+    }
+}
+
 module.exports.get = async (req, res, next) => {
     try {
         const { id } = req.params
@@ -22,6 +31,7 @@ module.exports.get = async (req, res, next) => {
     }
     return
 }
+
 module.exports.login = async (req, res, next) => {
     try {
         const { username, email, password } = req.body
@@ -76,10 +86,8 @@ module.exports.update = async (req, res, next) => {
     return
 }
 module.exports.delete = async (req, res, next) => {
-    console.log('aaaaa',req.params)
     try {
         const { id } = req.params
-        
         await repo.user.delete({ id:+id })
         res.status(200).json({message:`user id:${id} deleted`})
     } catch (err) {
