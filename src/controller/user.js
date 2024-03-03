@@ -76,10 +76,12 @@ module.exports.update = async (req, res, next) => {
     return
 }
 module.exports.delete = async (req, res, next) => {
+    console.log('aaaaa',req.params)
     try {
         const { id } = req.params
-        await repo.user.delete({ id })
-        res.status(200)
+        
+        await repo.user.delete({ id:+id })
+        res.status(200).json({message:`user id:${id} deleted`})
     } catch (err) {
         next(err)
     }
