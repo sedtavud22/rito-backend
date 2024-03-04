@@ -34,9 +34,11 @@ module.exports.get = async (req, res, next) => {
 
 module.exports.login = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
+    const { usernameOrEmail, password } = req.body;
     // GET username from database
-    const user = await repo.user.get({ OR: [{ username }, { email }] });
+    const user = await repo.user.get({
+      OR: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+    });
     if (!user) throw new CustomError("invalid credentials", "WRONG_INPUT", 400);
 
     // COMPARE password with database
@@ -48,7 +50,7 @@ module.exports.login = async (req, res, next) => {
     delete user.password;
     // SIGN token from user data
     const token = utils.jwt.sign(user);
-    res.status(200).json({ token });
+    res.status(200).json({ token, user });
   } catch (err) {
     next(err);
   }
@@ -77,7 +79,7 @@ module.exports.register = async (req, res, next) => {
     // SIGN token from user data
     const token = utils.jwt.sign(user);
 
-    res.status(200).json({ token });
+    res.status(200).json({ token, user });
   } catch (err) {
     next(err);
   }
