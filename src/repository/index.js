@@ -8,5 +8,6 @@ const repo = {
   gameGenre: require("./game-genre"),
   gameTag: require("./game-tag"),
   gamePlatform: require("./game-platform"),
+  cart: require("./cart"),
 };
 module.exports = repo;
