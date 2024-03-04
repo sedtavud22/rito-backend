@@ -40,6 +40,8 @@ module.exports = function restApiServer(app) {
   app.use("/genres", genreRoute);
   app.use("/tags", tagRoute);
   app.use("/platforms", platformRoute);
+  app.use("/carts", cartRoute);
+  app.use("/friendships",friendshipRoute)
 
   //=====================================================Throwing Zone
   app.use(notFound);
