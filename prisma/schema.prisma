@@ -25,6 +25,7 @@ model User {
   email           String           @unique
   profileImageUrl String?          @map("profile_image_url")
   isAdmin         Boolean          @default(false)
+  description     String?
   games           Game[]
   orders          Order[]
   carts           Cart[]
