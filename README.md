@@ -83,8 +83,8 @@ $ pnpx prisma db push
 | Get all games      | /games                    | GET    |        |              |               | verified&non-delete |
 | Get game by id     | /games/:gameId            | GET    |        |              |               |                     |
 | Get game by user   | /games/user/:userId       | GET    |        |              |               |                     |
-| Get game by tags   | /games/tag/:tagId         | GET    |        |              |               |
-| Get game by genres | /games/genre/:genreId     | GET    |        |              |               |
+| Get game by tags   | /games/tags/:tagId        | GET    |        |              |               |
+| Get game by genres | /games/genres/:genreId    | GET    |        |              |               |
 | Create game        | /games                    | POST   |        |              |               | non-verified        |
 | Update game        | /games/:gameId/update     | PATCH  |        |              |               |                     |
 | Delete game        | /games/:gameId/delete     | PATCH  |        |              |               |                     |
