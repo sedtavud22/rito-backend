@@ -99,10 +99,10 @@ module.exports.register = async (req, res, next) => {
 module.exports.update = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { firstName, lastName, profileImageUrl } = req.body;
+    const { firstName,lastName,displayName,description,profileImageUrl } = req.body;
     const user = await repo.user.update(
       { id: +id },
-      { firstName, lastName, profileImageUrl }
+      { firstName,lastName,displayName,description,profileImageUrl }
     );
 
     res.status(200).json({ user });
