@@ -60,6 +60,17 @@ module.exports.register = async (req, res, next) => {
   try {
     const { username, password, firstName, lastName, email, isAdmin } =
       req.body;
+    const existingUser = await repo.user.get({
+      OR: [{ username }, { email }],
+    });
+    if (existingUser) {
+      throw new CustomError(
+        "Username or Email already exists",
+        "WRONG_INPUT",
+        400
+      );
+    }
+
     // let role = Role.USER
     // if (req.body.role != Role.ADMIN) role = Role.ADMIN
     // HASHED PASSWORD
