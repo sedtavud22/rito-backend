@@ -15,6 +15,7 @@ const genreRoute = require("../router/genre");
 const tagRoute = require("../router/tag");
 const platformRoute = require("../router/platform");
 const cartRoute = require("../router/cart");
+const friendshipRoute = require("../router/friendship");
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -39,7 +40,6 @@ module.exports = function restApiServer(app) {
   app.use("/genres", genreRoute);
   app.use("/tags", tagRoute);
   app.use("/platforms", platformRoute);
-  app.use("/carts", cartRoute);
 
   //=====================================================Throwing Zone
   app.use(notFound);

@@ -9,5 +9,6 @@ const repo = {
   gameTag: require("./game-tag"),
   gamePlatform: require("./game-platform"),
   cart: require("./cart"),
+  friendship: require("./friendship")
 };
 module.exports = repo;
