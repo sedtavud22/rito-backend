@@ -4,5 +4,6 @@ const controller = {
   genre: require("./genre"),
   tag: require("./tag"),
   platform: require("./platform"),
+  cart: require("./cart"),
 };
 module.exports = controller;
