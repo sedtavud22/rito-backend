@@ -5,5 +5,11 @@ const targetUserSchema = Joi.object({
 })
 
 exports.validateTargetUserId = (req,res,next) =>{
-    const {value,error} = targetUserSchema.validate
+    const {value,error} = targetUserSchema.validate(req.params)
+    if(error){
+        throw error
+    }
+    req.targetUserId = value.targetUserId
+    next()
 }
+

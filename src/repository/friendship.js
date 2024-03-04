@@ -2,33 +2,40 @@ const prisma = require("../config/prisma")
 const {FriendStatus} = require("../constant/enum")
 const {userFilter} = require("../utils/user-filter")
 
-exports.requestFriend = async(senderId,receiverId) =>{
+exports.createFriendship = async(senderId,receiverId,status) =>{
     await prisma.friendShip.create({
-        data:{senderId,receiverId}
+        data:{senderId,receiverId,status}
     })}
 
 exports.checkExistFriendship = async(userId1,userId2) =>{
-    await prisma.friendShip.findFirst({
-    where:{
-        AND:[
-            {
-                OR:[
-                    {status: FriendStatus.PENDING},
-                    {status: FriendStatus.ACCEPTED}
-                ]
-            },
-            {
-                OR:[
-                    {senderId: userId1 , receiverId:userId2},
-                    {senderId: userId2 , receiverId:userId1}
-                ]
-            }
-        ]
-    }
-})}
+    return await prisma.friendShip.findFirst({
+        where:{
+            AND:[
+                {
+                    OR:[
+                        {status: FriendStatus.PENDING},
+                        {status: FriendStatus.ACCEPTED}
+                    ]
+                },
+                {
+                    OR:[
+                        {senderId: userId1 , receiverId:userId2},
+                        {senderId: userId2 , receiverId:userId1}
+                    ]
+                }
+            ]
+        }
+    })}
 
-exports.updateFriendship = async(data,id) => {
-    await prisma.friendShip.update({
+
+
+
+exports.findFriendship = async(where) =>{
+    return await prisma.friendShip.findFirst({where})
+}
+
+exports.updateFriendship = async(id,data) => {
+    return await prisma.friendShip.update({
         where:{id},
         data
 })}
@@ -48,3 +55,8 @@ exports.findFriendsIDByUserId = async(userId) =>{
     return friendsId
 }
 
+exports.deleteFriendship = async(id)=>{
+    await prisma.friendShip.delete({
+        where:{id}
+    })
+}
