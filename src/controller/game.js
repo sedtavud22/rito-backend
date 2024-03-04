@@ -16,8 +16,8 @@ exports.getGameByGameId = async (req, res, next) => {
   const { gameId } = req.params;
 
   try {
-    const games = await repo.game.getGameByGameId(+gameId);
-    res.status(200).json({ games });
+    const game = await repo.game.getGameByGameId(+gameId);
+    res.status(200).json({ game });
   } catch (err) {
     next(err);
   }

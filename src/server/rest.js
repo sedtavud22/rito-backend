@@ -14,6 +14,7 @@ const gameRoute = require("../router/game");
 const genreRoute = require("../router/genre");
 const tagRoute = require("../router/tag");
 const platformRoute = require("../router/platform");
+const cartRoute = require("../router/cart");
 const friendshipRoute = require("../router/friendship");
 
 //=====================================================Server Zone
@@ -39,7 +40,6 @@ module.exports = function restApiServer(app) {
   app.use("/genres", genreRoute);
   app.use("/tags", tagRoute);
   app.use("/platforms", platformRoute);
-  app.use("/friendships",friendshipRoute)
 
   //=====================================================Throwing Zone
   app.use(notFound);

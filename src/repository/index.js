@@ -4,6 +4,11 @@ const repo = {
   genre: require("./genre"),
   tag: require("./tag"),
   platform: require("./platform"),
+  screenshot: require("./screenshot"),
+  gameGenre: require("./game-genre"),
+  gameTag: require("./game-tag"),
+  gamePlatform: require("./game-platform"),
+  cart: require("./cart"),
   friendship: require("./friendship")
 };
 module.exports = repo;
