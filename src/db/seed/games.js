@@ -29,11 +29,6 @@ results.forEach((game) =>
 
 exports.gameGenres = gameGenres;
 
-exports.screenshots = results.map((game) => ({
-  gameId: game.id,
-  imageUrl: game.background_image_additional,
-}));
-
 const gameTags = [];
 
 results.forEach((game) =>
