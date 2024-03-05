@@ -20,7 +20,7 @@ async function seeding() {
       prisma.genre.createMany({ data: seeds.genres.genres }),
       prisma.tag.createMany({ data: seeds.tags.tags, skipDuplicates: true }),
       prisma.platform.createMany({ data: seeds.platforms.platforms }),
-      prisma.screenShot.createMany({ data: seeds.games.screenshots }),
+      prisma.screenShot.createMany({ data: seeds.screenshots.screenshots }),
       prisma.gamePlatform.createMany({ data: seeds.games.gamePlatforms }),
       prisma.gameGenre.createMany({ data: seeds.games.gameGenres }),
       prisma.gameTag.createMany({
