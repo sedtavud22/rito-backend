@@ -6,7 +6,7 @@ exports.create = async (req, res, next) => {
   const { gameId } = req.body;
 
   try {
-    const newCartItem = await repo.cart.create(req.user.id, gameId);
+    const newCartItem = await repo.cart.create(req.user.id, +gameId);
     res.status(200).json({ cart: newCartItem });
   } catch (error) {
     next(error);
