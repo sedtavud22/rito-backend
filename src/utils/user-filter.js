@@ -1,6 +1,6 @@
 exports.userFilter = {
     id:true,
-    userName:true,
+    username:true,
     displayName:true,
     profileImageUrl:true
 }
