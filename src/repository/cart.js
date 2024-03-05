@@ -14,7 +14,12 @@ exports.create = async (userId, gameId) =>
     },
   });
 
-exports.delete = async (id) => await prisma.cart.delete({ where: id });
+exports.delete = async (id) =>
+  await prisma.cart.delete({
+    where: {
+      id,
+    },
+  });
 
 exports.deleteCartItemsByUserId = async (userId) =>
   await prisma.cart.deleteMany({
@@ -24,7 +29,7 @@ exports.deleteCartItemsByUserId = async (userId) =>
   });
 
 exports.getCartItemsByUserId = async (userId) =>
-  await prisma.cart.findFirst({
+  await prisma.cart.findMany({
     where: {
       userId,
     },
