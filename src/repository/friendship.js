@@ -47,8 +47,12 @@ exports.findFriendsIDByUserId = async(userId) =>{
             status:FriendStatus.ACCEPTED
         },
         select:{
-            sender:{userFilter},
-            receiver:{userFilter}
+            sender:{
+                select:userFilter
+            },
+            receiver:{
+                select:userFilter
+            }
         }
     })
     const friendsId = friendShips.map(el => el.sender.id === userId ? el.receiver : el.sender)

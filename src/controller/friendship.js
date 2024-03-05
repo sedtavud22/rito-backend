@@ -89,4 +89,13 @@ exports.cancelRequest = async(req,res,next) =>{
 }
 
 
+exports.getAllFriendbyUserId = async(req,res,next) =>{
+    const targetUserId = req.targetUserId
+    try{
+        const allFriends = await repo.friendship.findFriendsIDByUserId(targetUserId)
+        res.status(200).json(allFriends)
+    }catch(err){
+        next(err)
+    }
+}
 
