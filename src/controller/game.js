@@ -13,12 +13,10 @@ exports.getAll = async (req, res, next) => {
 };
 
 exports.searchGames = async (req, res, next) => {
-  const { searchTerm } = req.body;
-
-  const searchTermSlug = utils.slug.makeSlug(searchTerm);
-
+  const { query } = req.params;
+  console.log(query);
   try {
-    const games = await repo.game.searchGames(searchTermSlug);
+    const games = await repo.game.searchGames(query);
     res.status(200).json({ games });
   } catch (error) {
     next(error);
