@@ -9,6 +9,7 @@ const repo = {
   gameTag: require("./game-tag"),
   gamePlatform: require("./game-platform"),
   cart: require("./cart"),
-  friendship: require("./friendship")
+  friendship: require("./friendship"),
+  stripe: require("./stripe"),
 };
 module.exports = repo;
