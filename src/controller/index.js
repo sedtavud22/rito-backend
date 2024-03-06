@@ -5,6 +5,7 @@ const controller = {
   tag: require("./tag"),
   platform: require("./platform"),
   cart: require("./cart"),
-  friendship: require("./friendship")
+  friendship: require("./friendship"),
+  payment: require("./payment"),
 };
 module.exports = controller;
