@@ -10,6 +10,48 @@ exports.getAll = async () =>
     include: gameInclusion.gameInclude,
   });
 
+exports.searchGames = async (searchTerm) =>
+  await prisma.game.findMany({
+    where: {
+      AND: [
+        { deletedAt: null },
+        { isVerified: true },
+        {
+          OR: [
+            {
+              slug: {
+                contains: searchTerm,
+              },
+            },
+            {
+              gameTags: {
+                some: {
+                  tag: {
+                    slug: {
+                      contains: searchTerm,
+                    },
+                  },
+                },
+              },
+            },
+            {
+              gameGenres: {
+                some: {
+                  genre: {
+                    slug: {
+                      contains: searchTerm,
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        },
+      ],
+    },
+    include: gameInclusion.gameInclude,
+  });
+
 exports.getGameByGameId = async (id) =>
   await prisma.game.findFirst({
     where: {
