@@ -13,5 +13,6 @@ const repo = {
   stripe: require("./stripe"),
   payment: require("./payment"),
   gameCollection: require("./game-collection"),
+  wishlist: require("./wishlist"),
 };
 module.exports = repo;

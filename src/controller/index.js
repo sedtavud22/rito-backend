@@ -7,5 +7,7 @@ const controller = {
   cart: require("./cart"),
   friendship: require("./friendship"),
   payment: require("./payment"),
+  wishlist: require("./wishlist"),
+  gameCollection: require("./game-collection"),
 };
 module.exports = controller;
