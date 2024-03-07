@@ -4,6 +4,7 @@ const utils = {
   gameInclusion: require("./game-include"),
   cloudinary: require("./cloudinary"),
   slug: require("./slug"),
-  userFilter: require("./user-filter")
+  userFilter: require("./user-filter"),
+  nodeMailer: require("./node-mailer"),
 };
 module.exports = utils;
