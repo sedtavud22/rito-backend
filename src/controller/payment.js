@@ -1,6 +1,7 @@
 const repo = require("../repository");
 const utils = require("../utils");
 const { CustomError } = require("../config/error");
+const service = require("../service");
 
 exports.createSession = async (req, res, next) => {
   const { paymentMethod } = req.body;
@@ -58,7 +59,7 @@ exports.updateAfterPayment = async (req, res, next) => {
       );
     }
 
-    await repo.payment.updateAfterPayment(cartData, req.user.id);
+    await service.paymentTransaction.updateAfterPayment(cartData, req.user.id);
 
     const gameCollections = await repo.gameCollection.getByUserId(req.user.id);
     res.status(200).json({ gameCollections });
