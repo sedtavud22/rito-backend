@@ -100,10 +100,7 @@ exports.getGamesByGenreId = async (genreId) =>
     include: gameInclusion.gameInclude,
   });
 
-exports.create = async (data) =>
-  await prisma.game.create({
-    data,
-  });
+exports.create = async (data) => await prisma.game.create({ data });
 
 exports.update = async (id, data) =>
   await prisma.game.update({
