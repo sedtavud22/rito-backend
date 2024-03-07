@@ -25,7 +25,7 @@ module.exports.getMe = async (req, res, next) => {
 module.exports.get = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await repo.user.get({ id });
+    const user = await repo.user.get({ id:+id });
     delete user.password
     res.status(200).json({ user });
   } catch (err) {

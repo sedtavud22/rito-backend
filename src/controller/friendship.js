@@ -99,3 +99,12 @@ exports.getAllFriendbyUserId = async(req,res,next) =>{
     }
 }
 
+exports.getAllMyPending = async(req,res,next) =>{
+    const userId = req.user.id
+    try{
+        const allPending = await repo.friendship.findPendingRequest(userId)
+        res.status(200).json(allPending)
+    }catch(err){
+        next(err)
+    }
+}
