@@ -14,31 +14,32 @@ datasource db {
 }
 
 model User {
-  id              Int              @id @default(autoincrement())
-  username        String           @unique
-  password        String
-  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamp(0)
-  updatedAt       DateTime         @updatedAt @map("updated_at") @db.Timestamp(0)
-  displayName     String?          @map("display_name")
-  firstName       String           @map("first_name")
-  lastName        String           @map("last_name")
-  email           String           @unique
-  profileImageUrl String?          @map("profile_image_url")
-  isAdmin         Boolean          @default(false)
-  description     String?
-  games           Game[]
-  orders          Order[]
-  carts           Cart[]
-  communityposts  CommunityPost[]
-  comments        Comment[]
-  senders         FriendShip[]     @relation(name: "sender")
-  receivers       FriendShip[]     @relation(name: "receiver")
-  gameReviews     GameReview[]
-  user1           ChatSession[]    @relation(name: "user1")
-  user2           ChatSession[]    @relation(name: "user2")
-  messages        Message[]
-  gameCollections GameCollection[]
-  wishlists       Wishlist[]
+  id                 Int              @id @default(autoincrement())
+  username           String           @unique
+  password           String
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamp(0)
+  displayName        String?          @map("display_name")
+  firstName          String           @map("first_name")
+  lastName           String           @map("last_name")
+  email              String           @unique
+  profileImageUrl    String?          @map("profile_image_url")
+  isAdmin            Boolean          @default(false)
+  description        String?
+  resetPasswordToken String?          @map("reset_password_token") @db.Text
+  games              Game[]
+  orders             Order[]
+  carts              Cart[]
+  communityposts     CommunityPost[]
+  comments           Comment[]
+  senders            FriendShip[]     @relation(name: "sender")
+  receivers          FriendShip[]     @relation(name: "receiver")
+  gameReviews        GameReview[]
+  user1              ChatSession[]    @relation(name: "user1")
+  user2              ChatSession[]    @relation(name: "user2")
+  messages           Message[]
+  gameCollections    GameCollection[]
+  wishlists          Wishlist[]
 
   @@map("users")
 }
