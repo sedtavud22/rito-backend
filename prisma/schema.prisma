@@ -92,6 +92,7 @@ model Wishlist {
   game      Game     @relation(fields: [gameId], references: [id])
   gameId    Int
 
+  @@unique([userId, gameId])
   @@map("wishlists")
 }
 
