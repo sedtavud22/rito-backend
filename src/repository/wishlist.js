@@ -39,3 +39,13 @@ exports.deleteAllByUserId = async (userId) =>
       userId,
     },
   });
+
+exports.findByUserIdAndGameId = async (userId, gameId) =>
+  await prisma.wishlist.findUnique({
+    where: {
+      userId_gameId: {
+        userId,
+        gameId,
+      },
+    },
+  });

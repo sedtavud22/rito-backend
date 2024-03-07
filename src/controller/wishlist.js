@@ -2,10 +2,22 @@ const repo = require("../repository");
 const utils = require("../utils");
 const { CustomError } = require("../config/error");
 
-exports.create = async (req, res, next) => {
+exports.toggleWish = async (req, res, next) => {
   const { gameId } = req.body;
 
   try {
+    const wishGame = await repo.wishlist.findByUserIdAndGameId(
+      req.user.id,
+      +gameId
+    );
+
+    if (wishGame) {
+      await repo.wishlist.delete(wishGame.id);
+      return res
+        .status(200)
+        .json({ message: `Wishlist id: ${wishGame.id} deleted` });
+    }
+
     const newWishlistItem = await repo.wishlist.create(req.user.id, +gameId);
     res.status(200).json({ wishlist: newWishlistItem });
   } catch (error) {
