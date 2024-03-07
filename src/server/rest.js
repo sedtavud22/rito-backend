@@ -17,6 +17,8 @@ const platformRoute = require("../router/platform");
 const cartRoute = require("../router/cart");
 const friendshipRoute = require("../router/friendship");
 const paymentRoute = require("../router/payment");
+const wishlistRoute = require("../router/wishlist");
+const gameCollectionRoute = require("../router/game-collection");
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -44,6 +46,8 @@ module.exports = function restApiServer(app) {
   app.use("/carts", cartRoute);
   app.use("/friendships", friendshipRoute);
   app.use("/payments", paymentRoute);
+  app.use("/wishlists", wishlistRoute);
+  app.use("/game-collections", gameCollectionRoute);
 
   //=====================================================Throwing Zone
   app.use(notFound);
