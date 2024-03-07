@@ -15,6 +15,7 @@ module.exports.getAll = async (req, res, next) => {
 
 module.exports.getMe = async (req, res, next) => {
   try {
+    delete req.user.password
     res.status(200).json({ user: req.user });
   } catch (err) {
     next(err);
@@ -24,7 +25,8 @@ module.exports.getMe = async (req, res, next) => {
 module.exports.get = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await repo.user.get({ id });
+    const user = await repo.user.get({ id:+id });
+    delete user.password
     res.status(200).json({ user });
   } catch (err) {
     next(err);
@@ -100,10 +102,12 @@ module.exports.update = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { firstName,lastName,displayName,description,profileImageUrl } = req.body;
+    console.log(req.body)
     const user = await repo.user.update(
       { id: +id },
       { firstName,lastName,displayName,description,profileImageUrl }
     );
+    delete user.password
 
     res.status(200).json({ user });
   } catch (err) {

@@ -22,7 +22,8 @@ exports.createSession = async (req, res, next) => {
 
     const session = await repo.stripe.createPaymentSession(
       lineItems,
-      paymentMethod
+      paymentMethod,
+      req.user.email
     );
 
     res.send({ clientSecret: session.client_secret });
@@ -33,18 +34,35 @@ exports.createSession = async (req, res, next) => {
 
 exports.getSessionStatus = async (req, res, next) => {
   try {
-    console.log(req.query.session_id);
-    const session = await repo.stripe.getPaymentSessionStatus(
-      req.query.session_id
-    );
-    console.log(session);
+    const session = await repo.stripe.getPaymentSession(req.query.session_id);
 
     res.send({
       status: session.status,
       customer_email: session.customer_details.email,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
+  }
+};
+
+exports.updateAfterPayment = async (req, res, next) => {
+  const { sessionId, cartData } = req.body;
+
+  try {
+    const session = await repo.stripe.getPaymentSession(sessionId);
+    if (!session || session.payment_status !== "paid") {
+      throw new CustomError(
+        "Payment session does not exists",
+        "PAYMENT_SESSION_NOT_FOUND",
+        402
+      );
+    }
+
+    await repo.payment.updateAfterPayment(cartData, req.user.id);
+
+    const gameCollections = await repo.gameCollection.getByUserId(req.user.id);
+    res.status(200).json({ gameCollections });
+  } catch (error) {
     next(error);
   }
 };

@@ -11,5 +11,10 @@ paymentRoute.post(
   c.payment.createSession
 );
 paymentRoute.get("/session-status", c.payment.getSessionStatus);
+paymentRoute.post(
+  "/session/success",
+  authenticate,
+  c.payment.updateAfterPayment
+);
 
 module.exports = paymentRoute;
