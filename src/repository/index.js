@@ -11,7 +11,6 @@ const repo = {
   cart: require("./cart"),
   friendship: require("./friendship"),
   stripe: require("./stripe"),
-  payment: require("./payment"),
   gameCollection: require("./game-collection"),
   wishlist: require("./wishlist"),
 };

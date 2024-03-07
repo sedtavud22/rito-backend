@@ -1,6 +1,8 @@
+const fs = require("fs/promises");
 const repo = require("../repository");
 const utils = require("../utils");
 const { CustomError } = require("../config/error");
+const service = require("../service");
 
 exports.getAll = async (req, res, next) => {
   try {
@@ -71,7 +73,27 @@ exports.getGamesByGenreId = async (req, res, next) => {
   return;
 };
 
-exports.create = async (req, res, next) => {};
+exports.create = async (req, res, next) => {
+  try {
+    const createdGame = await service.gameTransaction.create(
+      req.body,
+      req.files,
+      req.user.id
+    );
+    res.status(200).json({ newGame: createdGame });
+  } catch (error) {
+    next(error);
+  } finally {
+    if (req.files.backgroundImage) {
+      fs.unlink(req.files.backgroundImage[0].path);
+    }
+    if (req.files.screenshots) {
+      for (let file of req.files.screenshots) {
+        fs.unlink(file.path);
+      }
+    }
+  }
+};
 
 exports.update = async (req, res, next) => {};
 
