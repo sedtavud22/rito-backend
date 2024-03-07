@@ -34,7 +34,6 @@ model User {
   senders         FriendShip[]     @relation(name: "sender")
   receivers       FriendShip[]     @relation(name: "receiver")
   gameReviews     GameReview[]
-  payments        Payment[]
   user1           ChatSession[]    @relation(name: "user1")
   user2           ChatSession[]    @relation(name: "user2")
   messages        Message[]
@@ -73,10 +72,11 @@ model Game {
 }
 
 model GameCollection {
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
-  game   Game @relation(fields: [gameId], references: [id])
-  gameId Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  game      Game     @relation(fields: [gameId], references: [id])
+  gameId    Int
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
 
   @@unique([userId, gameId])
   @@map("game_collections")
@@ -244,18 +244,6 @@ model GameReview {
   gameId Int    @map("game_id")
 
   @@map("game_reviews")
-}
-
-model Payment {
-  id             Int      @id @default(autoincrement())
-  cardToken      String   @map("card_token")
-  cardBrand      String   @map("card_brand")
-  lastFourDigits String   @map("last_four_digits") @db.VarChar(4)
-  expiryDate     DateTime @map("expiry_date") @db.Date
-  user           User     @relation(fields: [userId], references: [id])
-  userId         Int      @map("user_id")
-
-  @@map("payments")
 }
 
 model ChatSession {
