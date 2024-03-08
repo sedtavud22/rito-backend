@@ -16,7 +16,7 @@ module.exports.getAll = async (req, res, next) => {
 
 module.exports.getMe = async (req, res, next) => {
   try {
-    delete req.user.password
+    delete req.user.password;
     res.status(200).json({ user: req.user });
   } catch (err) {
     next(err);
@@ -26,8 +26,8 @@ module.exports.getMe = async (req, res, next) => {
 module.exports.get = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await repo.user.get({ id:+id });
-    delete user.password
+    const user = await repo.user.get({ id: +id });
+    delete user.password;
     res.status(200).json({ user });
   } catch (err) {
     next(err);
@@ -102,14 +102,16 @@ module.exports.register = async (req, res, next) => {
 module.exports.update = async (req, res, next) => {
   try {
     const { id } = req.params;
+
     const { firstName,lastName,displayName,description,profileImageUrl } = req.body;
     console.log(req.body)
-    console.log(req.file)
+
+
     const user = await repo.user.update(
       { id: +id },
-      { firstName,lastName,displayName,description,profileImageUrl }
+      { firstName, lastName, displayName, description, profileImageUrl }
     );
-    delete user.password
+    delete user.password;
 
     res.status(200).json({ user });
   } catch (err) {
@@ -147,4 +149,85 @@ module.exports.delete = async (req, res, next) => {
     next(err);
   }
   return;
+};
+
+module.exports.forgotPassword = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const existingUser = await repo.user.get({ email });
+    if (!existingUser) {
+      throw new CustomError(
+        "User with this email does not exist",
+        "WRONG_INPUT",
+        400
+      );
+    }
+
+    delete existingUser.password;
+
+    const resetPasswordToken = utils.jwt.signResetPassword(existingUser);
+
+    await repo.user.update(existingUser.id, { resetPasswordToken });
+
+    const message = {
+      from: process.env.GOOGLE_APP_EMAIL,
+      to: existingUser.email,
+      subject: "Reset Account Password Link",
+      html: `
+      <h3>Hi ${existingUser.username}.</h3>
+      <p>We received a request to reset the password for your account.</p>
+      <p>To reset your password, click the link below</p>
+      <p>${process.env.WEB_DOMAIN}/reset-password/${resetPasswordToken}</p>
+      `,
+    };
+
+    utils.nodeMailer.sendMail(message);
+    res.status(200).json({ message: "Reset password email has been sent" });
+  } catch (error) {
+    next(error);
+  }
+  return;
+};
+
+exports.updatePassword = async (req, res, next) => {
+  const { token, password } = req.body;
+  try {
+    const isRightToken = await repo.user.get({ resetPasswordToken: token });
+    if (!isRightToken) {
+      throw new CustomError(
+        "User with this token does not exist",
+        "NOT_FOUND_DATA",
+        400
+      );
+    }
+
+    const decoded = utils.jwt.verifyResetPassword(token);
+    const user = await repo.user.get({ id: decoded.id });
+    if (!user) {
+      throw new CustomError(
+        "User with this token does not exist",
+        "NOT_FOUND_DATA",
+        400
+      );
+    }
+
+    const isSamePassword = await utils.bcrypt.compare(password, user.password);
+    if (isSamePassword) {
+      throw new CustomError(
+        "New Password can not be the same as old password",
+        "INVALID_INPUT",
+        400
+      );
+    }
+
+    const hashed = await utils.bcrypt.hashed(password);
+
+    user.password = hashed;
+    user.resetPasswordToken = null;
+    await repo.user.update(user.id, user);
+    res.status(200).json({ message: "Your password has been changed" });
+  } catch (error) {
+    next(error);
+  }
 };

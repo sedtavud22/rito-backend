@@ -1,11 +1,17 @@
-const express = require("express")
-const {validateRegister} = require("../middlewares/validator/validate-auth")
+const express = require("express");
+const {
+  validateRegister,
+  validateChangePassword,
+} = require("../middlewares/validator/validate-auth");
+
 
 const c = require("../controller")
 const authenticate = require("../middlewares/authenticate")
 const upload = require("../middlewares/upload")
 
-const userRoute = express.Router()
+
+const userRoute = express.Router();
+
 
 userRoute.get("/", c.user.getAll)
 userRoute.get("/me",authenticate ,c.user.getMe)
@@ -18,4 +24,12 @@ userRoute.put("/:id/profileImage",
     c.user.updateProfileImage)
 userRoute.delete("/:id", authenticate, c.user.delete)
 
-module.exports = userRoute
+
+userRoute.post("/forgot-password", c.user.forgotPassword);
+userRoute.patch(
+  "/reset-password",
+  validateChangePassword,
+  c.user.updatePassword
+);
+
+module.exports = userRoute;

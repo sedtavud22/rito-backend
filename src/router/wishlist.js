@@ -5,7 +5,7 @@ const authenticate = require("../middlewares/authenticate");
 
 const wishlistRoute = express.Router();
 
-wishlistRoute.post("/", authenticate, c.wishlist.create);
+wishlistRoute.post("/", authenticate, c.wishlist.toggleWish);
 wishlistRoute.get("/me", authenticate, c.wishlist.getMyWishlist);
 wishlistRoute.get(
   "/user/:userId",
