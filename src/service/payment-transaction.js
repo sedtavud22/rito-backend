@@ -29,5 +29,16 @@ exports.updateAfterPayment = (cartData, userId) =>
       data: gameCollectionsDataArray,
     });
 
+    const gameIdArrays = cartData.map((item) => item.gameId);
+
+    await tx.wishlist.deleteMany({
+      where: {
+        userId,
+        gameId: {
+          in: gameIdArrays,
+        },
+      },
+    });
+
     return gameCollections;
   });
