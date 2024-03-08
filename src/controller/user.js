@@ -132,6 +132,8 @@ module.exports.updateProfileImage = async(req,res,next)=>{
       )
       delete user.password
       fs.unlink(req.file.path)
+      console.log(user)
+      res.status(200).json({user})
     }catch(err){
     next(err)
   }
