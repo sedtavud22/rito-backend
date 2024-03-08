@@ -11,3 +11,16 @@ exports.getAll = async (req, res, next) => {
   }
   return;
 };
+
+exports.searchPlatforms = async (req, res, next) => {
+  const { query } = req.params;
+
+  const searchSlug = utils.slug.makeSlug(query);
+
+  try {
+    const platforms = await repo.platform.searchPlatforms(searchSlug);
+    res.status(200).json({ platforms });
+  } catch (error) {
+    next(error);
+  }
+};
