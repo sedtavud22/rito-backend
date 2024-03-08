@@ -11,3 +11,16 @@ exports.getAll = async (req, res, next) => {
   }
   return;
 };
+
+exports.searchTags = async (req, res, next) => {
+  const { query } = req.params;
+
+  const searchSlug = utils.slug.makeSlug(query);
+
+  try {
+    const tags = await repo.tag.searchTags(searchSlug);
+    res.status(200).json({ tags });
+  } catch (error) {
+    next(error);
+  }
+};
