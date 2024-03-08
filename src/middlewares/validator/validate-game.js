@@ -7,13 +7,14 @@ const createGameSchema = Joi.object({
     "string.empty": "Game name is required",
     "any.required": "Game name is required",
   }),
-  releasedDate: Joi.date().required().messages({
+  releasedDate: Joi.date().less("now").required().messages({
     "date.base": "Invalid released date format",
     "any.required": "Game name is required",
+    "date.less": "Game must be already released",
   }),
   description: Joi.string().trim(),
-  price: Joi.string().trim().required().messages({
-    "string.empty": "Price is required",
+  price: Joi.number().required().messages({
+    "number.base": "Invalid price",
     "any.required": "Price is required",
   }),
   discount: Joi.string().trim(),
