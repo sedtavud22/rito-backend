@@ -123,16 +123,16 @@ module.exports.updateProfileImage = async(req,res,next)=>{
     throw new CustomError("Please select profile picture","WRONG_INPUT", 400);
   }
   const { id }  = req.params
-  const profileImageUrl = uploader.upload(req.file.path)
-  console.log(profileImageUrl)
-  fs.unlink(req.file.path)
+  const profileImage = await uploader.upload(req.file.path)
+  console.log(profileImage)
   try{
     const user = await repo.user.update(
       {id:+id},
-      {profileImageUrl}
-    )
-    delete user.password
-  }catch(err){
+      {profileImageUrl:profileImage.url}
+      )
+      delete user.password
+      fs.unlink(req.file.path)
+    }catch(err){
     next(err)
   }
 }
