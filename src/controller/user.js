@@ -152,16 +152,16 @@ module.exports.delete = async (req, res, next) => {
 };
 
 module.exports.forgotPassword = async (req, res, next) => {
-  const { email } = req.body;
+  const { usernameOrEmail } = req.body;
 
   try {
-    const existingUser = await repo.user.get({ email });
+    const existingUser = await repo.user.get({
+      OR: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+    });
     if (!existingUser) {
-      throw new CustomError(
-        "User with this email does not exist",
-        "WRONG_INPUT",
-        400
-      );
+      return res.status(200).json({
+        message: "A password reset request has been sent to your email",
+      });
     }
 
     delete existingUser.password;
@@ -177,13 +177,15 @@ module.exports.forgotPassword = async (req, res, next) => {
       html: `
       <h3>Hi ${existingUser.username}.</h3>
       <p>We received a request to reset the password for your account.</p>
-      <p>To reset your password, click the link below</p>
-      <p>${process.env.WEB_DOMAIN}/reset-password/${resetPasswordToken}</p>
+      <p>To reset your password, click the button below</p>
+      <a href='${process.env.WEB_DOMAIN}/reset-password/${resetPasswordToken}' style="text-decoration: none; color: #ffffff; background-color: #ff6e7c; padding: 8px 16px; font-size: 20px;">Reset Password</a>
       `,
     };
 
     utils.nodeMailer.sendMail(message);
-    res.status(200).json({ message: "Reset password email has been sent" });
+    res.status(200).json({
+      message: "A password reset request has been sent to your email",
+    });
   } catch (error) {
     next(error);
   }

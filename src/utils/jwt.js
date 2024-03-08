@@ -8,7 +8,7 @@ module.exports.sign = (payload) =>
 
 module.exports.signResetPassword = (payload) =>
   jwt.sign(payload, process.env.JWT_RESET_PASSWORD_KEY ?? "key", {
-    expiresIn: process.env.JWT_RESET_PASSWORD_EXPIRES ?? "15m",
+    expiresIn: process.env.JWT_RESET_PASSWORD_EXPIRES ?? "5m",
     algorithm: process.env.JWT_ALGORITHM ?? "HS384",
   });
 
