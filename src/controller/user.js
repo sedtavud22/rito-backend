@@ -1,7 +1,8 @@
+const fs = require('fs/promises')
 const repo = require("../repository");
 const utils = require("../utils");
 const { CustomError } = require("../config/error");
-const { Role } = require("@prisma/client");
+const uploader = require('../utils/cloudinary')
 
 module.exports.getAll = async (req, res, next) => {
   try {
@@ -101,9 +102,11 @@ module.exports.register = async (req, res, next) => {
 module.exports.update = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { firstName, lastName, displayName, description, profileImageUrl } =
-      req.body;
-    console.log(req.body);
+
+    const { firstName,lastName,displayName,description,profileImageUrl } = req.body;
+    console.log(req.body)
+
+
     const user = await repo.user.update(
       { id: +id },
       { firstName, lastName, displayName, description, profileImageUrl }
@@ -116,6 +119,27 @@ module.exports.update = async (req, res, next) => {
   }
   return;
 };
+
+module.exports.updateProfileImage = async(req,res,next)=>{
+  if(!req.file) {
+    throw new CustomError("Please select profile picture","WRONG_INPUT", 400);
+  }
+  const { id }  = req.params
+  const profileImage = await uploader.upload(req.file.path)
+  console.log(profileImage)
+  try{
+    const user = await repo.user.update(
+      {id:+id},
+      {profileImageUrl:profileImage.url}
+      )
+      delete user.password
+      fs.unlink(req.file.path)
+      console.log(user)
+      res.status(200).json({user})
+    }catch(err){
+    next(err)
+  }
+}
 module.exports.delete = async (req, res, next) => {
   try {
     const { id } = req.params;
