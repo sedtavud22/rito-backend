@@ -8,5 +8,5 @@ exports.searchTags = async (searchTerm) =>
       slug: {
         contains: searchTerm,
       },
-    },
+    },take: 8
   });
