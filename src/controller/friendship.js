@@ -2,6 +2,21 @@ const repo = require("../repository")
 const {CustomError} = require("../config/error")
 const { FriendStatus } = require("../constant/enum")
 
+exports.checkFriendshipStatus = async(req,res,next)=>{
+    const userId = req.user.id
+    const targetUserId = req.targetUserId
+    const isExistUser = await repo.user.get({id:targetUserId})
+        if(!isExistUser){
+            throw new CustomError("no user founded","WRONG_INPUT",400)
+        }
+    
+    try{
+        const friendship = await repo.friendship.checkExistFriendship(userId,targetUserId)
+        res.status(200).json(friendship)
+    }catch(err){
+        next(err)
+    }
+}
 
 exports.requestFriend = async(req,res,next) =>{
     const userId = req.user.id

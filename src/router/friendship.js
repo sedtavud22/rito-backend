@@ -5,6 +5,11 @@ const authenticate = require("../middlewares/authenticate")
 const {validateTargetUserId} = require("../middlewares/validator/validate-user")
 const friendshipRoute = express.Router()
 
+friendshipRoute.get("/status/:targetUserId",
+    authenticate,
+    validateTargetUserId,
+    c.friendship.checkFriendshipStatus
+)
 
 friendshipRoute.get("/friends/:targetUserId",
     authenticate,
