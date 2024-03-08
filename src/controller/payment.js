@@ -2,6 +2,7 @@ const repo = require("../repository");
 const utils = require("../utils");
 const { CustomError } = require("../config/error");
 const service = require("../service");
+const { getWishlistByUserId } = require("../repository/wishlist");
 
 exports.createSession = async (req, res, next) => {
   const { paymentMethod } = req.body;
@@ -46,6 +47,17 @@ exports.getSessionStatus = async (req, res, next) => {
   }
 };
 
+const removeGameFromWishlist = async (userId, gameId) => {
+  return await wishlist.delete({
+    where: {
+      userId_gameId: {
+        userId: userId,
+        gameId: gameId,
+      },
+    },
+  });
+};
+
 exports.updateAfterPayment = async (req, res, next) => {
   const { sessionId, cartData } = req.body;
 
@@ -59,6 +71,20 @@ exports.updateAfterPayment = async (req, res, next) => {
       );
     }
 
+    const wishlist = await repo.wishlist.getByUserId(req.user.id);
+    console.log(wishlist,"*************************************************************");
+
+   
+    for (const item of cartData) {
+      const isWishlisted = wishlist.some((wishlistItem) => {
+        return wishlistItem.gameId === item.gameId;
+      });
+      console.log(isWishlisted,"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+      if (isWishlisted) {
+        await removeGameFromWishlist(req.user.id, item.gameId);
+      }
+    }
+
     await service.paymentTransaction.updateAfterPayment(cartData, req.user.id);
 
     const gameCollections = await repo.gameCollection.getByUserId(req.user.id);
@@ -67,3 +93,5 @@ exports.updateAfterPayment = async (req, res, next) => {
     next(error);
   }
 };
+
+removeGameFromWishlist(3,124)

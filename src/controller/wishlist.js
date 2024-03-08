@@ -68,3 +68,14 @@ exports.deleteAllByUserId = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.removeGameFromWishlist = async (userId, gameId) => {
+  return await Wishlist.delete({
+    where: {
+      userId_gameId: {
+        userId: userId,
+        gameId: gameId
+      }
+    }
+  });
+};
