@@ -47,17 +47,6 @@ exports.getSessionStatus = async (req, res, next) => {
   }
 };
 
-const removeGameFromWishlist = async (userId, gameId) => {
-  return await wishlist.delete({
-    where: {
-      userId_gameId: {
-        userId: userId,
-        gameId: gameId,
-      },
-    },
-  });
-};
-
 exports.updateAfterPayment = async (req, res, next) => {
   const { sessionId, cartData } = req.body;
 
@@ -72,14 +61,29 @@ exports.updateAfterPayment = async (req, res, next) => {
     }
 
     const wishlist = await repo.wishlist.getByUserId(req.user.id);
-    console.log(wishlist,"*************************************************************");
+    console.log(
+      wishlist,
+      "*************************************************************"
+    );
+    const removeGameFromWishlist = async (userId, gameId) => {
+      return await wishlist.delete({
+        where: {
+          userId_gameId: {
+            userId: userId,
+            gameId: gameId,
+          },
+        },
+      });
+    };
 
-   
     for (const item of cartData) {
       const isWishlisted = wishlist.some((wishlistItem) => {
         return wishlistItem.gameId === item.gameId;
       });
-      console.log(isWishlisted,"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+      console.log(
+        isWishlisted,
+        "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+      );
       if (isWishlisted) {
         await removeGameFromWishlist(req.user.id, item.gameId);
       }
@@ -93,5 +97,3 @@ exports.updateAfterPayment = async (req, res, next) => {
     next(error);
   }
 };
-
-removeGameFromWishlist(3,124)
