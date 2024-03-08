@@ -32,6 +32,9 @@ exports.findPendingRequest = async(id) =>{
         where:{
             status:"PENDING",
             receiverId:id
+        },
+        select:{
+            sender:true
         }
     })
 }
