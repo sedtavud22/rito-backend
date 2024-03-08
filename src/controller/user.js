@@ -108,7 +108,7 @@ module.exports.update = async (req, res, next) => {
 
 
     const user = await repo.user.update(
-      { id: +id },
+      +id,
       { firstName, lastName, displayName, description, profileImageUrl }
     );
     delete user.password;
@@ -127,9 +127,10 @@ module.exports.updateProfileImage = async(req,res,next)=>{
   const { id }  = req.params
   const profileImage = await uploader.upload(req.file.path)
   console.log(profileImage)
+  console.log(id)
   try{
     const user = await repo.user.update(
-      {id:+id},
+      +id,
       {profileImageUrl:profileImage.url}
       )
       delete user.password
