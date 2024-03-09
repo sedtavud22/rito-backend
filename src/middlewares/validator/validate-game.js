@@ -24,6 +24,7 @@ const createGameSchema = Joi.object({
   tags: Joi.any(),
   platforms: Joi.any(),
   screenshots: Joi.any(),
+  deletedScreenshotIds: Joi.any(),
 });
 
 exports.validateCreateGame = validate(createGameSchema);

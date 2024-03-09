@@ -98,6 +98,34 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.update = async (req, res, next) => {};
+exports.update = async (req, res, next) => {
+  const { gameId } = req.params;
+
+  try {
+    const existingGame = await repo.game.getGameByGameId(+gameId);
+    if (!existingGame) {
+      throw new CustomError("Game does not exist", "NotFoundData", 500);
+    }
+    const updatedGame = await service.gameTransaction.update(
+      req.body,
+      req.files,
+      req.user.id,
+      +gameId
+    );
+    res.status(200).json({ game: updatedGame });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  } finally {
+    if (req.files.backgroundImage) {
+      fs.unlink(req.files.backgroundImage[0].path);
+    }
+    if (req.files.screenshots) {
+      for (let file of req.files.screenshots) {
+        fs.unlink(file.path);
+      }
+    }
+  }
+};
 
 exports.delete = async (req, res, next) => {};

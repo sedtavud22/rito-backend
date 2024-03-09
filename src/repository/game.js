@@ -56,7 +56,6 @@ exports.getGameByGameId = async (id) =>
   await prisma.game.findFirst({
     where: {
       deletedAt: null,
-      isVerified: true,
       id,
     },
     include: gameInclusion.gameInclude,
