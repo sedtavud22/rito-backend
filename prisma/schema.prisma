@@ -14,62 +14,64 @@ datasource db {
 }
 
 model User {
-  id                 Int              @id @default(autoincrement())
-  username           String           @unique
-  password           String
-  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamp(0)
-  updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamp(0)
-  displayName        String?          @map("display_name")
-  firstName          String           @map("first_name")
-  lastName           String           @map("last_name")
-  email              String           @unique
-  profileImageUrl    String?          @map("profile_image_url")
-  isAdmin            Boolean          @default(false)
-  description        String?
-  resetPasswordToken String?          @map("reset_password_token") @db.Text
-  games              Game[]
-  orders             Order[]
-  carts              Cart[]
-  communityposts     CommunityPost[]
-  comments           Comment[]
-  senders            FriendShip[]     @relation(name: "sender")
-  receivers          FriendShip[]     @relation(name: "receiver")
-  gameReviews        GameReview[]
-  user1              ChatSession[]    @relation(name: "user1")
-  user2              ChatSession[]    @relation(name: "user2")
-  messages           Message[]
-  gameCollections    GameCollection[]
-  wishlists          Wishlist[]
+  id                   Int              @id @default(autoincrement())
+  username             String           @unique
+  password             String
+  createdAt            DateTime         @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt            DateTime         @updatedAt @map("updated_at") @db.Timestamp(0)
+  displayName          String?          @map("display_name")
+  firstName            String           @map("first_name")
+  lastName             String           @map("last_name")
+  email                String           @unique
+  profileImageUrl      String?          @map("profile_image_url")
+  profileImagePublicId String?          @map("profile_image_public_id")
+  isAdmin              Boolean          @default(false)
+  description          String?
+  resetPasswordToken   String?          @map("reset_password_token") @db.Text
+  games                Game[]
+  orders               Order[]
+  carts                Cart[]
+  communityposts       CommunityPost[]
+  comments             Comment[]
+  senders              FriendShip[]     @relation(name: "sender")
+  receivers            FriendShip[]     @relation(name: "receiver")
+  gameReviews          GameReview[]
+  user1                ChatSession[]    @relation(name: "user1")
+  user2                ChatSession[]    @relation(name: "user2")
+  messages             Message[]
+  gameCollections      GameCollection[]
+  wishlists            Wishlist[]
 
   @@map("users")
 }
 
 model Game {
-  id                 Int              @id @default(autoincrement())
-  isVerified         Boolean          @default(false) @map("is_verified")
-  name               String
-  slug               String
-  releasedDate       DateTime         @map("released_date") @db.Date
-  description        String?          @db.Text
-  price              Int
-  discount           Decimal?
-  backgroundImageUrl String           @map("background_image_url")
-  metacritic         Int?
-  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamp(0)
-  updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamp(0)
-  deletedAt          DateTime?        @map("deleted_at") @db.Timestamp(0)
-  user               User             @relation(fields: [publisherId], references: [id])
-  publisherId        Int              @map("publisher_id")
-  gamePlatforms      GamePlatform[]
-  gameGenres         GameGenre[]
-  gameTags           GameTag[]
-  screenshots        ScreenShot[]
-  orderItems         OrderItem[]
-  communityposts     CommunityPost[]
-  gameReviews        GameReview[]
-  gameCollections    GameCollection[]
-  carts              Cart[]
-  wishlists          Wishlist[]
+  id                      Int              @id @default(autoincrement())
+  isVerified              Boolean          @default(false) @map("is_verified")
+  name                    String
+  slug                    String
+  releasedDate            DateTime         @map("released_date") @db.Date
+  description             String?          @db.Text
+  price                   Int
+  discount                Decimal?
+  backgroundImageUrl      String           @map("background_image_url")
+  backgroundImagePublicId String?          @map("background_image_public_id")
+  metacritic              Int?
+  createdAt               DateTime         @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt               DateTime         @updatedAt @map("updated_at") @db.Timestamp(0)
+  deletedAt               DateTime?        @map("deleted_at") @db.Timestamp(0)
+  user                    User             @relation(fields: [publisherId], references: [id])
+  publisherId             Int              @map("publisher_id")
+  gamePlatforms           GamePlatform[]
+  gameGenres              GameGenre[]
+  gameTags                GameTag[]
+  screenshots             ScreenShot[]
+  orderItems              OrderItem[]
+  communityposts          CommunityPost[]
+  gameReviews             GameReview[]
+  gameCollections         GameCollection[]
+  carts                   Cart[]
+  wishlists               Wishlist[]
 
   @@map("games")
 }
@@ -157,10 +159,11 @@ model GameTag {
 }
 
 model ScreenShot {
-  id       Int    @id @default(autoincrement())
-  imageUrl String @map("image_url")
-  game     Game   @relation(fields: [gameId], references: [id])
-  gameId   Int    @map("game_id")
+  id       Int     @id @default(autoincrement())
+  imageUrl String  @map("image_url")
+  publicId String? @map("public_id")
+  game     Game    @relation(fields: [gameId], references: [id])
+  gameId   Int     @map("game_id")
 
   @@map("screenshots")
 }

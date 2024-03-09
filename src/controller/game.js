@@ -84,6 +84,7 @@ exports.create = async (req, res, next) => {
     );
     res.status(200).json({ newGame: createdGame });
   } catch (error) {
+    console.log(error);
     next(error);
   } finally {
     if (req.files.backgroundImage) {

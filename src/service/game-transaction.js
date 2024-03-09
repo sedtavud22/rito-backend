@@ -3,129 +3,113 @@ const repo = require("../repository");
 const utils = require("../utils");
 
 exports.create = (body, files, userId) =>
-  prisma.$transaction(async (tx) => {
-    const {
-      name,
-      releasedDate,
-      description,
-      price,
-      discount,
-      metacritic,
-      genres,
-      tags,
-      platforms,
-    } = body;
+  prisma.$transaction(
+    async (tx) => {
+      const {
+        name,
+        releasedDate,
+        description,
+        price,
+        discount,
+        metacritic,
+        genres,
+        tags,
+        platforms,
+      } = body;
 
-    const gameData = {
-      name,
-      slug: utils.slug.makeSlug(name),
-      releasedDate,
-      price: +price,
-      publisherId: userId,
-    };
+      const gameData = {
+        name,
+        slug: utils.slug.makeSlug(name),
+        releasedDate,
+        price: +price,
+        publisherId: userId,
+      };
 
-    if (description) {
-      gameData.description = description;
-    }
-
-    if (discount) {
-      gameData.discount = +discount;
-    }
-
-    if (metacritic) {
-      gameData.metacritic = +metacritic;
-    }
-
-    if (files.backgroundImage) {
-      const backgroundImageUpload = await utils.cloudinary.upload(
-        files.backgroundImage[0].path
-      );
-      gameData.backgroundImageUrl = backgroundImageUpload.secure_url;
-    }
-
-    const newGame = await tx.game.create({
-      data: gameData,
-    });
-
-    const gameGenresData = [];
-
-    if (genres) {
-      if (!Array.isArray(genres)) {
-        genres = [genres];
+      if (description) {
+        gameData.description = description;
       }
 
-      for (let genre of genres) {
-        let { id } = await tx.genre.findFirst({
-          where: {
-            name: genre,
-          },
-          select: {
-            id: true,
-          },
-        });
-        gameGenresData.push({ genreId: id, gameId: newGame.id });
+      if (discount) {
+        gameData.discount = +discount;
       }
 
-      await tx.gameGenre.createMany({ data: gameGenresData });
-    }
-
-    const gameTagsData = [];
-
-    if (tags) {
-      if (!Array.isArray(tags)) {
-        tags = [tags];
+      if (metacritic) {
+        gameData.metacritic = +metacritic;
       }
 
-      for (let tag of tags) {
-        let { id } = await tx.tag.findFirst({
-          where: {
-            name: tag,
-          },
-          select: {
-            id: true,
-          },
-        });
-        gameTagsData.push({ tagId: id, gameId: newGame.id });
+      if (files.backgroundImage) {
+        const backgroundImageUpload = await utils.cloudinary.upload(
+          files.backgroundImage[0].path
+        );
+        gameData.backgroundImageUrl = backgroundImageUpload.secure_url;
+        gameData.backgroundImagePublicId = backgroundImageUpload.public_id;
       }
 
-      await tx.gameTag.createMany({ data: gameTagsData });
-    }
+      const newGame = await tx.game.create({
+        data: gameData,
+      });
 
-    const gamePlatformsData = [];
+      const gameGenresData = [];
 
-    if (platforms) {
-      if (!Array.isArray(platforms)) {
-        platforms = [platforms];
+      if (genres) {
+        const parsedGenres = JSON.parse(genres);
+
+        for (let genre of parsedGenres) {
+          gameGenresData.push({ genreId: genre.id, gameId: newGame.id });
+        }
+
+        await tx.gameGenre.createMany({ data: gameGenresData });
       }
 
-      for (let platform of platforms) {
-        let { id } = await tx.platform.findFirst({
-          where: {
-            name: platform,
-          },
-          select: {
-            id: true,
-          },
-        });
-        gamePlatformsData.push({ platformId: id, gameId: newGame.id });
+      const gameTagsData = [];
+
+      if (tags) {
+        const parsedTags = JSON.parse(tags);
+
+        for (let tag of parsedTags) {
+          gameTagsData.push({ tagId: tag.id, gameId: newGame.id });
+        }
+
+        await tx.gameTag.createMany({ data: gameTagsData });
       }
 
-      await tx.gamePlatform.createMany({ data: gamePlatformsData });
-    }
+      const gamePlatformsData = [];
 
-    const screenshotsData = [];
+      if (platforms) {
+        const parsedPlatforms = JSON.parse(platforms);
 
-    if (files.screenshots) {
-      for (const file of files.screenshots) {
-        const result = await utils.cloudinary.upload(file.path);
-        screenshotsData.push({
-          imageUrl: result.secure_url,
-          gameId: newGame.id,
-        });
+        for (let platform of parsedPlatforms) {
+          gamePlatformsData.push({
+            platformId: platform.id,
+            gameId: newGame.id,
+          });
+        }
+
+        await tx.gamePlatform.createMany({ data: gamePlatformsData });
       }
-      await tx.screenShot.createMany({ data: screenshotsData });
-    }
 
-    const createdGame = await repo.game.getGameByGameId(newGame.id);
-    return createdGame;
-  });
+      const screenshotsData = [];
+
+      if (files.screenshots) {
+        for (const file of files.screenshots) {
+          const result = await utils.cloudinary.upload(file.path);
+          screenshotsData.push({
+            imageUrl: result.secure_url,
+            publicId: result.public_id,
+            gameId: newGame.id,
+          });
+        }
+        await tx.screenShot.createMany({ data: screenshotsData });
+      }
+
+      const createdGame = await tx.game.findFirst({
+        where: {
+          id: newGame.id,
+        },
+        include: utils.gameInclusion.gameInclude,
+      });
+
+      return createdGame;
+    },
+    { timeout: 20000 }
+  );
