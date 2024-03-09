@@ -27,7 +27,16 @@ gameRoute.post(
   validateGameBackgroundImage,
   c.game.create
 );
-gameRoute.patch("/:gameId/update", c.game.update);
+gameRoute.patch(
+  "/:gameId/update",
+  authenticate,
+  upload.fields([
+    { name: "backgroundImage", maxCount: 1 },
+    { name: "screenshots" },
+  ]),
+  validateCreateGame,
+  c.game.update
+);
 gameRoute.patch("/:gameId/delete", c.game.delete);
 
 module.exports = gameRoute;
