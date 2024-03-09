@@ -137,7 +137,6 @@ exports.update = (body, files, userId, gameId) =>
         slug: utils.slug.makeSlug(name),
         releasedDate,
         price: +price,
-        publisherId: userId,
       };
 
       if (description) {
