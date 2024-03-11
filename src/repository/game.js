@@ -99,6 +99,15 @@ exports.getGamesByGenreId = async (genreId) =>
     include: gameInclusion.gameInclude,
   });
 
+exports.getUnverified = async () =>
+  await prisma.game.findMany({
+    where: {
+      isVerified: false,
+      deletedAt: null,
+    },
+    include: { user: true, ...gameInclusion.gameInclude },
+  });
+
 exports.create = async (data) => await prisma.game.create({ data });
 
 exports.update = async (id, data) =>

@@ -6,6 +6,12 @@ const { validateAdmin } = require("../middlewares/validator/validate-user");
 
 const adminRoute = express.Router();
 
+adminRoute.get(
+  "/games/non-verified",
+  authenticate,
+  validateAdmin,
+  c.admin.getAllUnverifiedGames
+);
 adminRoute.patch(
   "/games/:gameId/verify",
   authenticate,
