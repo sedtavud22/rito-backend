@@ -27,14 +27,43 @@ exports.checkExistFriendship = async(userId1,userId2) =>{
         }
     })}
 
+exports.findFriendsAdded = async(userId) =>{
+    return await prisma.friendShip.findMany({
+        where:{
+            AND:[
+                {
+                    OR:[
+                        {status: FriendStatus.PENDING},
+                        {status: FriendStatus.ACCEPTED}
+                    ]
+                },
+                {
+                    OR:[
+                        {senderId: userId},
+                        {receiverId: userId}
+                    ]
+                }
+            ]
+        },
+        select:{
+            senderId:true,
+            receiverId:true
+        }
+    })}
+
 exports.findPendingRequest = async(id) =>{
     return await prisma.friendShip.findMany({
         where:{
             status:"PENDING",
             receiverId:id
+        },
+        select:{
+            receiverId:true,
+            sender:true
         }
     })
 }
+
 
 
 exports.findFriendship = async(where) =>{
