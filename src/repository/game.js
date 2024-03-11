@@ -107,4 +107,5 @@ exports.update = async (id, data) =>
       id,
     },
     data,
+    include: gameInclusion.gameInclude,
   });
