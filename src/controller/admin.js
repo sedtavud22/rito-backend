@@ -2,6 +2,15 @@ const repo = require("../repository");
 const utils = require("../utils");
 const { CustomError } = require("../config/error");
 
+exports.getAllUnverifiedGames = async (req, res, next) => {
+  try {
+    const games = await repo.game.getUnverified();
+    res.status(200).json({ games });
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.verifyGame = async (req, res, next) => {
   const { gameId } = req.params;
 
