@@ -18,6 +18,16 @@ exports.checkFriendshipStatus = async(req,res,next)=>{
     }
 }
 
+exports.getFriendsToAdd = async(req,res,next)=>{
+    const userId = req.user.id
+    try{
+        const friendsToAdd = await repo.friendship.findFriendsAdded(userId)
+        res.status(200).json(friendsToAdd)
+    }catch(err){
+        next(err)
+    }
+}
+
 exports.requestFriend = async(req,res,next) =>{
     const userId = req.user.id
     const targetUserId = req.targetUserId

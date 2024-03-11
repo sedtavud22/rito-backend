@@ -17,6 +17,11 @@ friendshipRoute.get("/friends/:targetUserId",
     c.friendship.getAllFriendbyUserId
 )
 
+friendshipRoute.get("/friendsAdded",
+    authenticate,
+    c.friendship.getFriendsToAdd
+)
+
 friendshipRoute.get("/pending",
     authenticate,
     c.friendship.getAllMyPending
