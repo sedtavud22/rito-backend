@@ -9,5 +9,6 @@ const controller = {
   payment: require("./payment"),
   wishlist: require("./wishlist"),
   gameCollection: require("./game-collection"),
+  admin: require("./admin"),
 };
 module.exports = controller;

@@ -37,6 +37,5 @@ gameRoute.patch(
   validateCreateGame,
   c.game.update
 );
-gameRoute.patch("/:gameId/delete", c.game.delete);
 
 module.exports = gameRoute;

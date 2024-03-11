@@ -19,6 +19,7 @@ const friendshipRoute = require("../router/friendship");
 const paymentRoute = require("../router/payment");
 const wishlistRoute = require("../router/wishlist");
 const gameCollectionRoute = require("../router/game-collection");
+const adminRoute = require("../router/admin");
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -48,6 +49,7 @@ module.exports = function restApiServer(app) {
   app.use("/payments", paymentRoute);
   app.use("/wishlists", wishlistRoute);
   app.use("/game-collections", gameCollectionRoute);
+  app.use("/admin", adminRoute);
 
   //=====================================================Throwing Zone
   app.use(notFound);
