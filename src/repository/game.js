@@ -72,7 +72,7 @@ exports.getGamesByUserId = async (userId) =>
         },
       },
     },
-    include: gameInclusion.gameInclude,
+    include: {...gameInclusion.gameInclude, gameCollections: true},
   });
 
 exports.getGamesByTagId = async (tagId) =>
