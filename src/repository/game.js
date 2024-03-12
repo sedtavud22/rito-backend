@@ -83,6 +83,8 @@ exports.getGamesByTagId = async (tagId) =>
           tagId,
         },
       },
+      isVerified: true,
+      deletedAt: null,
     },
     include: gameInclusion.gameInclude,
   });
@@ -95,6 +97,8 @@ exports.getGamesByGenreId = async (genreId) =>
           genreId,
         },
       },
+      isVerified: true,
+      deletedAt: null,
     },
     include: gameInclusion.gameInclude,
   });
