@@ -82,6 +82,7 @@ model GameCollection {
   game      Game     @relation(fields: [gameId], references: [id])
   gameId    Int
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  gameKey   String   @default(cuid()) @map("game_key")
 
   @@unique([userId, gameId])
   @@map("game_collections")
