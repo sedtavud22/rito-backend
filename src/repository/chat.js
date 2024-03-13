@@ -67,7 +67,7 @@ exports.getHistoryChat = async (senderId, receiverId) =>
 exports.getAllChatForAdmin = async (adminId) =>
   await prisma.chat.findMany({
     where: {
-      OR: [{ chatSenderId: adminId }, { chatReceiverId: adminId }],
+      chatReceiverId: adminId,
     },
     distinct: ["chatSenderId", "chatReceiverId"],
     include: {
