@@ -10,5 +10,6 @@ const controller = {
   wishlist: require("./wishlist"),
   gameCollection: require("./game-collection"),
   admin: require("./admin"),
+  chat: require("./chat"),
 };
 module.exports = controller;

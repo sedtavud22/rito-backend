@@ -15,5 +15,6 @@ const repo = {
   stripe: require("./stripe"),
   gameCollection: require("./game-collection"),
   wishlist: require("./wishlist"),
+  chat: require("./chat"),
 };
 module.exports = repo;
