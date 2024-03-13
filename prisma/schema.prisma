@@ -77,6 +77,7 @@ model Game {
 }
 
 model GameCollection {
+  id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
   game      Game     @relation(fields: [gameId], references: [id])
@@ -84,7 +85,6 @@ model GameCollection {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
   gameKey   String   @default(cuid()) @map("game_key")
 
-  @@unique([userId, gameId])
   @@map("game_collections")
 }
 
