@@ -24,5 +24,11 @@ adminRoute.patch(
   validateAdmin,
   c.admin.deleteGame
 );
+adminRoute.get(
+  "/chat/get",
+  authenticate,
+  validateAdmin,
+  c.admin.getAllChatForAdmin
+);
 
 module.exports = adminRoute;

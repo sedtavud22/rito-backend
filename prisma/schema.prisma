@@ -36,9 +36,8 @@ model User {
   senders              FriendShip[]     @relation(name: "sender")
   receivers            FriendShip[]     @relation(name: "receiver")
   gameReviews          GameReview[]
-  user1                ChatSession[]    @relation(name: "user1")
-  user2                ChatSession[]    @relation(name: "user2")
-  messages             Message[]
+  chatSenders          Chat[]           @relation(name: "chatSender")
+  chatReceivers        Chat[]           @relation(name: "chatReceiver")
   gameCollections      GameCollection[]
   wishlists            Wishlist[]
 
@@ -265,25 +264,26 @@ model GameReview {
   @@map("game_reviews")
 }
 
-model ChatSession {
-  id       Int       @id @default(autoincrement())
-  user1    User      @relation(fields: [user1Id], references: [id], name: "user1")
-  user1Id  Int       @map("user_1_id")
-  user2    User      @relation(fields: [user2Id], references: [id], name: "user2")
-  user2Id  Int       @map("user_2_id")
-  messages Message[]
+model Chat {
+  id             Int      @id @default(autoincrement())
+  message        String
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+  chatSender     User     @relation(fields: [chatSenderId], references: [id], name: "chatSender")
+  chatSenderId   Int      @map("chat_sender_id")
+  chatReceiver   User     @relation(fields: [chatReceiverId], references: [id], name: "chatReceiver")
+  chatReceiverId Int      @map("chat_receiver_id")
 
-  @@map("chat_sessions")
+  @@map("chat")
 }
 
-model Message {
-  id            Int         @id @default(autoincrement())
-  content       String
-  timestamp     DateTime    @db.Timestamp(0)
-  chatSession   ChatSession @relation(fields: [chatSessionId], references: [id])
-  chatSessionId Int         @map("chat_session_id")
-  user          User        @relation(fields: [userId], references: [id])
-  userId        Int         @map("user_id")
+// model Message {
+//   id            Int         @id @default(autoincrement())
+//   content       String
+//   timestamp     DateTime    @db.Timestamp(0)
+//   chatSession   ChatSession @relation(fields: [chatSessionId], references: [id])
+//   chatSessionId Int         @map("chat_session_id")
+//   user          User        @relation(fields: [userId], references: [id])
+//   userId        Int         @map("user_id")
 
-  @@map("messages")
-}
+//   @@map("messages")
+// }

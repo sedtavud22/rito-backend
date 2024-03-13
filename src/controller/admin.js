@@ -42,3 +42,12 @@ exports.deleteGame = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getAllChatForAdmin = async (req, res, next) => {
+  try {
+    const chats = await repo.chat.getAllChatForAdmin(req.user.id);
+    res.status(200).json({ chats });
+  } catch (error) {
+    next(error);
+  }
+};
