@@ -21,6 +21,9 @@ const wishlistRoute = require("../router/wishlist");
 const gameCollectionRoute = require("../router/game-collection");
 const adminRoute = require("../router/admin");
 const chatRoute = require("../router/chat");
+const postRoute = require("../router/post")
+const commentRoute = require("../router/comment")
+const likeRoute = require("../router/like")
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -52,6 +55,9 @@ module.exports = function restApiServer(app) {
   app.use("/game-collections", gameCollectionRoute);
   app.use("/admin", adminRoute);
   app.use("/chat", chatRoute);
+  app.use("/post", postRoute)
+  app.use("/comment",commentRoute)
+  app.use("/like",likeRoute)
 
   //=====================================================Throwing Zone
   app.use(notFound);

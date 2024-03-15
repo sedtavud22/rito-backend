@@ -40,6 +40,8 @@ model User {
   chatReceivers        Chat[]           @relation(name: "chatReceiver")
   gameCollections      GameCollection[]
   wishlists            Wishlist[]
+  commentLike          CommentLike[]
+  PostLike             PostLike[]
 
   @@map("users")
 }
@@ -201,17 +203,20 @@ model Cart {
 }
 
 model CommunityPost {
-  id        Int       @id @default(autoincrement())
-  content   String
-  postType  PostType  @default(DISCUSSION) @map("post_type")
-  user      User      @relation(fields: [userId], references: [id])
-  userId    Int       @map("user_id")
-  game      Game      @relation(fields: [gameId], references: [id])
-  gameId    Int       @map("game_id")
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamp(0)
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp(0)
+  id        Int        @id @default(autoincrement())
+  title     String?
+  content   String?
+  postType  PostType   @default(DISCUSSION) @map("post_type")
+  imgUrl    String?    @map("img_url")
+  user      User       @relation(fields: [userId], references: [id])
+  userId    Int        @map("user_id")
+  game      Game       @relation(fields: [gameId], references: [id])
+  gameId    Int        @map("game_id")
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime   @updatedAt @map("updated_at") @db.Timestamp(0)
+  deletedAt DateTime?  @map("deleted_at") @db.Timestamp(0)
   comments  Comment[]
+  PostLike  PostLike[]
 
   @@map("community_posts")
 }
@@ -220,6 +225,16 @@ enum PostType {
   SCREENSHOT
   FANART
   DISCUSSION
+}
+
+model PostLike {
+  user          User          @relation(fields: [postLikerId], references: [id])
+  postLikerId   Int           @map("post_liker_id")
+  communityPost CommunityPost @relation(fields: [postId], references: [id])
+  postId        Int           @map("post_id")
+
+  @@id([postId, postLikerId])
+  @@map("post_likes")
 }
 
 model Comment {
@@ -231,8 +246,19 @@ model Comment {
   commenterId     Int           @map("commenter_id")
   communityPost   CommunityPost @relation(fields: [communityPostId], references: [id])
   communityPostId Int           @map("community_post_id")
+  commentLike     CommentLike[]
 
   @@map("comments")
+}
+
+model CommentLike {
+  user           User    @relation(fields: [commentLikerId], references: [id])
+  commentLikerId Int     @map("comment_liker_id")
+  comment        Comment @relation(fields: [commentId], references: [id])
+  commentId      Int     @map("comment_id")
+
+  @@id([commentId, commentLikerId])
+  @@map("comment_likes")
 }
 
 model FriendShip {

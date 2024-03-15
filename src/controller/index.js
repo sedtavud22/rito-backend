@@ -11,5 +11,8 @@ const controller = {
   gameCollection: require("./game-collection"),
   admin: require("./admin"),
   chat: require("./chat"),
+  post: require("./post"),
+  comment: require("./comment"),
+  like: require("./like")
 };
 module.exports = controller;
