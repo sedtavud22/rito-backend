@@ -6,6 +6,6 @@ const authenticate = require("../middlewares/authenticate")
 const commentRoute = express.Router()
 
 commentRoute.get("/:postId",c.comment.getAll)
-commentRoute.post("/",c.comment.createComment)
+commentRoute.post("/:postId",authenticate,c.comment.createComment)
 
 module.exports = commentRoute

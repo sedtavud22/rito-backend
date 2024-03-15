@@ -7,6 +7,6 @@ const upload = require("../middlewares/upload")
 const postRoute = express.Router()
 
 postRoute.get("/",c.post.getAll)
-postRoute.post("/",c.post.createPost)
+postRoute.post("/",authenticate,c.post.createPost)
 
 module.exports = postRoute

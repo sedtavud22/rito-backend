@@ -13,7 +13,7 @@ exports.getAll = async (req,res,next) =>{
 
 exports.createPost = async (req,res,next) =>{
     try{
-        
+        req.body.userId = req.user.id
         const post = await repo.post.createPost(req.body)
         res.status(200).json({post})
     }catch(err){
