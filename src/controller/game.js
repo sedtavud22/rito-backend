@@ -16,7 +16,7 @@ exports.getAll = async (req, res, next) => {
 };
 
 exports.getRandom = async (req, res, next) => {
-  const { count } = req.params;
+  const { count } = req.query;
 
   try {
     if (isNaN(count)) {
