@@ -22,6 +22,6 @@ exports.gameInclude = {
   },
 };
 
-exports.gameSkip = (page) => (page - 1) * 24 || 0;
+exports.gameSkip = (page) => (page - 1) * 30 || 0;
 
-exports.gameTake = 24;
+exports.gameTake = 30;
