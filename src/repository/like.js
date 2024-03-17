@@ -19,7 +19,7 @@ exports.likePost = async(userId,postId) =>
     })
 
 exports.dislikePost = async(userId,postId) =>
-    await prisma.postLike.delete({
+    await prisma.postLike.deleteMany({
         where:{
             AND:[
                 {postLikerId:userId},
@@ -47,7 +47,7 @@ exports.likeComment = async(userId,commentId) =>
     })
 
 exports.dislikeComment = async(userId,commentId) =>
-    await prisma.commentLike.delete({
+    await prisma.commentLike.deleteMany({
         where:{
             AND:[
                 {commentLikerId:userId},
