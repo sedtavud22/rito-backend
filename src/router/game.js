@@ -11,6 +11,7 @@ const {
 const gameRoute = express.Router();
 
 gameRoute.get("/", c.game.getAll);
+gameRoute.get("/random", c.game.getRandom);
 gameRoute.get("/search/:query", c.game.searchGames);
 gameRoute.get("/:gameId", c.game.getGameByGameId);
 gameRoute.get("/user/:userId", c.game.getGamesByUserId);

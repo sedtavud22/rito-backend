@@ -19,7 +19,11 @@ const createGameSchema = Joi.object({
   }),
   discount: Joi.string().trim(),
   backgroundImage: Joi.string(),
-  metacritic: Joi.string().trim(),
+  metacritic: Joi.number().min(0).max(100).allow("").messages({
+    "number.base": "Invalid metacritic score",
+    "number.max": "Metacritic score must be in range of 0 - 100",
+    "number.min": "Metacritic score must be in range of 0 - 100",
+  }),
   genres: Joi.any(),
   tags: Joi.any(),
   platforms: Joi.any(),

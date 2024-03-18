@@ -5,24 +5,46 @@ const { CustomError } = require("../config/error");
 const service = require("../service");
 
 exports.getAll = async (req, res, next) => {
+  const { page } = req.query;
   try {
-    const games = await repo.game.getAll();
-    res.status(200).json({ games });
+    const games = await repo.game.getAll(page);
+    res.status(200).json({ count: games.length, games });
   } catch (err) {
     next(err);
   }
   return;
 };
 
-exports.searchGames = async (req, res, next) => {
-  const { query } = req.params;
-
-  const searchSlug = utils.slug.makeSlug(query);
+exports.getRandom = async (req, res, next) => {
+  const { count } = req.query;
 
   try {
-    const games = await repo.game.searchGames(searchSlug);
-    res.status(200).json({ games });
+    if (isNaN(count)) {
+      throw new CustomError("Invalid count number", "INVALID_INPUT", 400);
+    }
+
+    const gameIds = await repo.game.getRandomIds(count);
+    const idArray = gameIds.map((idObj) => idObj.id);
+    const games = await repo.game.getGamesByGameIds(idArray);
+
+    res.status(200).json({ count: games.length, games });
   } catch (error) {
+    console.log(error);
+    next(error);
+  }
+  return;
+};
+
+exports.searchGames = async (req, res, next) => {
+  const { query } = req.params;
+  const { page } = req.query;
+
+  const searchSlug = utils.slug.makeSlug(query);
+  try {
+    const games = await repo.game.searchGames(searchSlug, page);
+    res.status(200).json({ count: games.length, games });
+  } catch (error) {
+    console.log(error);
     next(error);
   }
 };
@@ -53,10 +75,11 @@ exports.getGamesByUserId = async (req, res, next) => {
 
 exports.getGamesByTagId = async (req, res, next) => {
   const { tagId } = req.params;
+  const { page } = req.query;
 
   try {
-    const games = await repo.game.getGamesByTagId(+tagId);
-    res.status(200).json({ games });
+    const games = await repo.game.getGamesByTagId(+tagId, page);
+    res.status(200).json({ count: games.length, games });
   } catch (err) {
     next(err);
   }
@@ -65,10 +88,11 @@ exports.getGamesByTagId = async (req, res, next) => {
 
 exports.getGamesByGenreId = async (req, res, next) => {
   const { genreId } = req.params;
+  const { page } = req.query;
 
   try {
-    const games = await repo.game.getGamesByGenreId(+genreId);
-    res.status(200).json({ games });
+    const games = await repo.game.getGamesByGenreId(+genreId, page);
+    res.status(200).json({ count: games.length, games });
   } catch (err) {
     next(err);
   }

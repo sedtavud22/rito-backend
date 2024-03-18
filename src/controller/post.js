@@ -32,7 +32,7 @@ exports.createPost = async (req, res, next) => {
       req.body.imgUrl = image.url;
       // req.body.gameId = 32
       fs.unlink(req.file?.path);
-    }
+      }
     console.log(req.body);
     const post = await repo.post.createPost(req.body);
     res.status(200).json({ post });
@@ -41,6 +41,17 @@ exports.createPost = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getSearchPost = async(req,res,next) =>{
+    try{
+        const {query} = req.params
+        const posts = await repo.post.searchPosts(query)
+        res.status(200).json({posts})
+    }catch(err){
+        next(err)
+    }
+}
+    
 
 exports.editPost = async (req, res, next) => {
   try {

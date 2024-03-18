@@ -1,16 +1,21 @@
 const prisma = require("../config/prisma");
 const { gameInclusion } = require("../utils");
 
-exports.getAll = async () =>
+exports.getAll = async (page) =>
   await prisma.game.findMany({
     where: {
       deletedAt: null,
       isVerified: true,
     },
     include: gameInclusion.gameInclude,
+    skip: gameInclusion.gameSkip(page),
+    take: gameInclusion.gameTake,
   });
 
-exports.searchGames = async (searchTerm) =>
+exports.getRandomIds = async (count = 3) =>
+  await prisma.$queryRaw`SELECT id FROM games WHERE deleted_at IS NULL AND is_verified = true ORDER BY rand() LIMIT ${count}`;
+
+exports.searchGames = async (searchTerm, page) =>
   await prisma.game.findMany({
     where: {
       AND: [
@@ -50,6 +55,8 @@ exports.searchGames = async (searchTerm) =>
       ],
     },
     include: gameInclusion.gameInclude,
+    skip: gameInclusion.gameSkip(page),
+    take: gameInclusion.gameTake,
   });
 
 exports.getGameByGameId = async (id) =>
@@ -57,6 +64,17 @@ exports.getGameByGameId = async (id) =>
     where: {
       deletedAt: null,
       id,
+    },
+    include: gameInclusion.gameInclude,
+  });
+
+exports.getGamesByGameIds = async (idArray) =>
+  await prisma.game.findMany({
+    where: {
+      deletedAt: null,
+      id: {
+        in: idArray,
+      },
     },
     include: gameInclusion.gameInclude,
   });
@@ -72,10 +90,10 @@ exports.getGamesByUserId = async (userId) =>
         },
       },
     },
-    include: {...gameInclusion.gameInclude, gameCollections: true},
+    include: { ...gameInclusion.gameInclude, gameCollections: true },
   });
 
-exports.getGamesByTagId = async (tagId) =>
+exports.getGamesByTagId = async (tagId, page) =>
   await prisma.game.findMany({
     where: {
       gameTags: {
@@ -87,9 +105,11 @@ exports.getGamesByTagId = async (tagId) =>
       deletedAt: null,
     },
     include: gameInclusion.gameInclude,
+    skip: gameInclusion.gameSkip(page),
+    take: gameInclusion.gameTake,
   });
 
-exports.getGamesByGenreId = async (genreId) =>
+exports.getGamesByGenreId = async (genreId, page) =>
   await prisma.game.findMany({
     where: {
       gameGenres: {
@@ -101,6 +121,8 @@ exports.getGamesByGenreId = async (genreId) =>
       deletedAt: null,
     },
     include: gameInclusion.gameInclude,
+    skip: gameInclusion.gameSkip(page),
+    take: gameInclusion.gameTake,
   });
 
 exports.getUnverified = async () =>
