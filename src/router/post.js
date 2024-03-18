@@ -7,6 +7,7 @@ const upload = require("../middlewares/upload")
 const postRoute = express.Router()
 
 postRoute.get("/",c.post.getAll)
+postRoute.get("/search/:query",c.post.getSearchPost)
 postRoute.get("/:postId",c.post.getPostById)
 postRoute.post("/",
     authenticate,

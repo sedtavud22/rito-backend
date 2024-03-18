@@ -23,6 +23,16 @@ exports.getPostById = async(req,res,next) =>{
     }
 }
 
+exports.getSearchPost = async(req,res,next) =>{
+    try{
+        const {query} = req.params
+        const posts = await repo.post.searchPosts(query)
+        res.status(200).json({posts})
+    }catch(err){
+        next(err)
+    }
+}
+
 exports.createPost = async (req,res,next) =>{
     try{
         req.body.userId = req.user.id

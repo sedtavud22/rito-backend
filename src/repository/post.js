@@ -12,6 +12,24 @@ exports.getPostById = async(id) =>
         include:postInclusion.postInclude
     })
 
+exports.searchPosts = async (searchTerm)=>
+    await prisma.communityPost.findMany({
+        where:{
+            OR:[
+                {title:{contains:searchTerm}},
+                {content:{contains:searchTerm}},
+                {user:{
+                    username:{contains:searchTerm}
+                    }
+                },
+                {game:{
+                    name:{contains:searchTerm}
+                }}
+            ]
+        },
+        include:postInclusion.postInclude
+    })
+
 exports.createPost = async(data)=> await prisma.communityPost.create({
     data,
     include:postInclusion.postInclude
