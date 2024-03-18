@@ -29,7 +29,7 @@ exports.createPost = async (req,res,next) =>{
         if(req.file){
             const image = await uploader.upload(req.file.path)
             req.body.imgUrl = image.url
-            // req.body.gameId = 32
+            req.body.gameId = 32
             fs.unlink(req.file?.path)
         }
         console.log(req.body)

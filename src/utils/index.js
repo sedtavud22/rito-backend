@@ -6,5 +6,6 @@ const utils = {
   slug: require("./slug"),
   userFilter: require("./user-filter"),
   nodeMailer: require("./node-mailer"),
+  postInclusion: require("./post-include")
 };
 module.exports = utils;
