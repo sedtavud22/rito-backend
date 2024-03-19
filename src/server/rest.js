@@ -3,6 +3,10 @@ const express = require("express");
 const { json, urlencoded } = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const cookieSession = require("cookie-session");
+const session = require('express-session')
+const passport = require("passport")
+require("../middlewares/passportGoogle")
 
 //=====================================================local consted Zone
 
@@ -25,11 +29,23 @@ const chatRoute = require("../router/chat");
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
   //=====================================================Encoding Zone
+
+
   app.use(morgan("dev"));
-  app.use(cors());
+  app.use(cors({origin:"http://localhost:5173",credentials:true}));
   app.use(json());
   app.use(urlencoded({ extended: false }));
   app.use(express.static("public"));
+
+  app.use(cookieSession({
+    name: "session",
+		keys: [process.env.COOKIE_KEY],
+		maxAge: 24 * 60 * 60 * 1000,
+  }))
+
+
+  app.use(passport.initialize())
+  app.use(passport.session())
 
   //=====================================================Routing Zone
   app.use("/ping", (req, res, next) => {

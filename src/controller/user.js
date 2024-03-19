@@ -99,6 +99,15 @@ module.exports.register = async (req, res, next) => {
   }
   return;
 };
+
+module.exports.googleLogin = async(req,res,next) =>{
+  const user = req.user
+  delete user.password
+  console.log(user,"from controller")
+  const token = utils.jwt.sign(user)
+  res.status(200).json({ token, user })
+}
+
 module.exports.update = async (req, res, next) => {
   try {
     const { id } = req.params;
